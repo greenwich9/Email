@@ -1,0 +1,740 @@
+﻿@using EmailReport.ViewModels
+@model ReportListViewModel
+
+@{ 
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gentelella Alela! | </title>
+    <style>
+        .canvasjs-chart-credit {
+            display: none;
+        }
+    </style>
+
+    <!-- Bootstrap -->
+    <link href="~/UI/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="~/UI/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="~/UI/vendors/nprogress/nprogress.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="~/UI/build/css/custom.min.css" rel="stylesheet">
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="~/Views/Report/js/PiePlot.js"></script>
+    @*<script>
+        window.onload = function () {
+            var total = @Model.ClickCount + @Model.ProcessedCount + @Model.DeferredCount + @Model.DeliveredCount + @Model.OpenCount;
+            var Processed = @Model.ProcessedCount/total;
+            var Deliverred = @Model.DeliveredCount / total;
+            var Deferred = @Model.DeferredCount / total;
+            var Open = @Model.OpenCount / total;
+            var Click = @Model.ClickCount / total;
+var chart = new CanvasJS.Chart("chartContainer", {
+    animationEnabled: true,
+    theme: "light2",
+	title: {
+		text: "Email"
+	},
+  tooltipFillColor: "rgba(51, 51, 51, 0.55)",
+	data: [{
+		type: "pie",
+		indexLabelFontSize: 18,
+		radius: 80,
+		indexLabel: "{label} - {y}",
+		yValueFormatString: "###0.0\"%\"",
+		click: explodePie,
+		dataPoints: [
+			{ y: Processed, label: "Processed" },
+			{ y: Deliver, label: "Deliverred"},
+            { y: Deferred, label: "Deferred"},
+			{ y: Open, label: "Open" },
+			{ y: Click, label: "Click" }
+		],
+      backgroundColor: [
+                                "#BDC3C7",
+                                "#9B59B6",
+                                "#E74C3C",
+                                "#26B99A",
+                                "#3498DB"
+                            ],
+                            hoverBackgroundColor: [
+                                "#CFD4D8",
+                                "#B370CF",
+                                "#E95E4F",
+                                "#36CAAB",
+                                "#49A9EA"
+                            ]
+	}]
+});
+chart.render();
+
+function explodePie(e) {
+	for(var i = 0; i < e.dataSeries.dataPoints.length; i++) {
+		if(i !== e.dataPointIndex)
+			e.dataSeries.dataPoints[i].exploded = false;
+	}
+}
+ 
+}
+    </script>*@
+</head>
+
+<body class="nav-md">
+    <div class="container body">
+        <div class="main_container">
+            <div class="col-md-3 left_col">
+                <div class="left_col scroll-view">
+                    <div class="navbar nav_title" style="border: 0;">
+                        <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                    <!-- menu profile quick info -->
+                    <div class="profile clearfix">
+                        <div class="profile_pic">
+                            <img src="~/Views/Report/images/img.jpg" alt="..." class="img-circle profile_img">
+                        </div>
+                        <div class="profile_info">
+                            <span>Welcome,</span>
+                            <h2>John Doe</h2>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <!-- /menu profile quick info -->
+
+                    <br />
+
+                    <!-- sidebar menu -->
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                        <div class="menu_section">
+                            <h3>General</h3>
+                            <ul class="nav side-menu">
+                                <li>
+                                    <a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="index.html">Dashboard</a></li>
+                                        <li><a href="index2.html">Dashboard2</a></li>
+                                        <li><a href="index3.html">Dashboard3</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-edit"></i> Forms <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="form.html">General Form</a></li>
+                                        <li><a href="form_advanced.html">Advanced Components</a></li>
+                                        <li><a href="form_validation.html">Form Validation</a></li>
+                                        <li><a href="form_wizards.html">Form Wizard</a></li>
+                                        <li><a href="form_upload.html">Form Upload</a></li>
+                                        <li><a href="form_buttons.html">Form Buttons</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-desktop"></i> UI Elements <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="general_elements.html">General Elements</a></li>
+                                        <li><a href="media_gallery.html">Media Gallery</a></li>
+                                        <li><a href="typography.html">Typography</a></li>
+                                        <li><a href="icons.html">Icons</a></li>
+                                        <li><a href="glyphicons.html">Glyphicons</a></li>
+                                        <li><a href="widgets.html">Widgets</a></li>
+                                        <li><a href="invoice.html">Invoice</a></li>
+                                        <li><a href="inbox.html">Inbox</a></li>
+                                        <li><a href="calendar.html">Calendar</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="tables.html">Tables</a></li>
+                                        <li><a href="tables_dynamic.html">Table Dynamic</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-bar-chart-o"></i> Data Presentation <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="chartjs.html">Chart JS</a></li>
+                                        <li><a href="chartjs2.html">Chart JS2</a></li>
+                                        <li><a href="morisjs.html">Moris JS</a></li>
+                                        <li><a href="echarts.html">ECharts</a></li>
+                                        <li><a href="other_charts.html">Other Charts</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-clone"></i>Layouts <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="fixed_sidebar.html">Fixed Sidebar</a></li>
+                                        <li><a href="fixed_footer.html">Fixed Footer</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="menu_section">
+                            <h3>Live On</h3>
+                            <ul class="nav side-menu">
+                                <li>
+                                    <a><i class="fa fa-bug"></i> Additional Pages <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="e_commerce.html">E-commerce</a></li>
+                                        <li><a href="projects.html">Projects</a></li>
+                                        <li><a href="project_detail.html">Project Detail</a></li>
+                                        <li><a href="contacts.html">Contacts</a></li>
+                                        <li><a href="profile.html">Profile</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-windows"></i> Extras <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="page_403.html">403 Error</a></li>
+                                        <li><a href="page_404.html">404 Error</a></li>
+                                        <li><a href="page_500.html">500 Error</a></li>
+                                        <li><a href="plain_page.html">Plain Page</a></li>
+                                        <li><a href="login.html">Login Page</a></li>
+                                        <li><a href="pricing_tables.html">Pricing Tables</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-sitemap"></i> Multilevel Menu <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="#level1_1">Level One</a>
+                                        <li>
+                                            <a>Level One<span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu">
+                                                <li class="sub_menu">
+                                                    <a href="level2.html">Level Two</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#level2_1">Level Two</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#level2_2">Level Two</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#level1_2">Level One</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0)"><i class="fa fa-laptop"></i> Landing Page <span class="label label-success pull-right">Coming Soon</span></a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                    <!-- /sidebar menu -->
+                    <!-- /menu footer buttons -->
+                    <div class="sidebar-footer hidden-small">
+                        <a data-toggle="tooltip" data-placement="top" title="Settings">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Lock">
+                            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <!-- /menu footer buttons -->
+                </div>
+            </div>
+
+            <!-- top navigation -->
+            <div class="top_nav">
+                <div class="nav_menu">
+                    <nav>
+                        <div class="nav toggle">
+                            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                        </div>
+
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="">
+                                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    <img src="~/Views/Report/images/img.jpg" alt="">John Doe
+                                    <span class=" fa fa-angle-down"></span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-usermenu pull-right">
+                                    <li><a href="javascript:;"> Profile</a></li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            <span class="badge bg-red pull-right">50%</span>
+                                            <span>Settings</span>
+                                        </a>
+                                    </li>
+                                    <li><a href="javascript:;">Help</a></li>
+                                    <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                                </ul>
+                            </li>
+
+                            <li role="presentation" class="dropdown">
+                                <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-envelope-o"></i>
+                                    <span class="badge bg-green">6</span>
+                                </a>
+                                <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
+                                    <li>
+                                        <a>
+                                            <span class="image"><img src="~/Views/Report/images/img.jpg" alt="Profile Image" /></span>
+                                            <span>
+                                                <span>John Smith</span>
+                                                <span class="time">3 mins ago</span>
+                                            </span>
+                                            <span class="message">
+                                                Film festivals used to be do-or-die moments for movie makers. They were where...
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a>
+                                            <span class="image"><img src="~/Views/Report/images/img.jpg" alt="Profile Image" /></span>
+                                            <span>
+                                                <span>John Smith</span>
+                                                <span class="time">3 mins ago</span>
+                                            </span>
+                                            <span class="message">
+                                                Film festivals used to be do-or-die moments for movie makers. They were where...
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a>
+                                            <span class="image"><img src="~/Views/Report/images/img.jpg" alt="Profile Image" /></span>
+                                            <span>
+                                                <span>John Smith</span>
+                                                <span class="time">3 mins ago</span>
+                                            </span>
+                                            <span class="message">
+                                                Film festivals used to be do-or-die moments for movie makers. They were where...
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a>
+                                            <span class="image"><img src="~/Views/Report/images/img.jpg" alt="Profile Image" /></span>
+                                            <span>
+                                                <span>John Smith</span>
+                                                <span class="time">3 mins ago</span>
+                                            </span>
+                                            <span class="message">
+                                                Film festivals used to be do-or-die moments for movie makers. They were where...
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="text-center">
+                                            <a>
+                                                <strong>See All Alerts</strong>
+                                                <i class="fa fa-angle-right"></i>
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="right_col" role="main">
+                <div class="">
+                    <div class="page-title">
+                        <div class="title_left">
+                            <h3>Overview</h3>
+                        </div>
+
+                        <div class="title_right">
+                            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search for...">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="button">Go!</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="x_content">
+                        <table class="" style="width:100%">
+
+                            <tr>
+                                <td>
+                                    <div id="chartContainer" class="canvasDoughnut" height="300" width="300" style="margin: 15px 10px 10px 0px; width: 300px; height: 300px;"></div>
+                                    @*<canvas class="canvasDoughnut" height="210" width="210" style="margin: 15px 10px 10px 0px; width: 140px; height: 140px;"></canvas>*@
+                                </td>
+                                <td>
+                                    <table class="tile_info" style="width:initial">
+                                        <tr style="font-size:x-large">
+                                            <td width="60%">
+                                                <p style="font-size:x-large"><i class="fa fa-square blue" style="font-size:x-large"></i>Processed </p>
+                                            </td>
+                                            <td style="font-size:x-large">@Model.ProcessedCount</td>
+                                        </tr>
+                                        <tr style="font-size:x-large">
+                                            <td>
+                                                <p style="font-size:x-large"><i class="fa fa-square green" style="font-size:x-large"></i>Delivered </p>
+                                            </td>
+                                            <td style="font-size:x-large">@Model.DeliveredCount</td>
+                                        </tr>
+                                        <tr style="font-size:x-large">
+                                            <td>
+                                                <p style="font-size:x-large"><i class="fa fa-square purple" style="font-size:x-large"></i>Deferred </p>
+                                            </td>
+                                            <td style="font-size:x-large">@Model.DeferredCount</td>
+                                        </tr>
+                                        <tr style="font-size:x-large">
+                                            <td>
+                                                <p style="font-size:x-large"><i class="fa fa-square aero" style="font-size:x-large"></i>Open </p>
+                                            </td>
+                                            <td style="font-size:x-large" >@Model.OpenCount</td>
+                                        </tr>
+                                        <tr style="font-size:x-large">
+                                            <td>
+                                                <p style="font-size:x-large"><i class="fa fa-square red" style="font-size:x-large"></i>Clicks </p>
+                                            </td>
+                                            <td style="font-size:x-large">@Model.ClickCount</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <table border="0" width="1000">
+
+                        <tr style="font-size:xx-large; text-align:center">
+                            <td> @Model.ProcessedCount</td>
+                            <td> @Model.DeliveredCount</td>
+                            <td> @Model.DeferredCount</td>
+                            <td> @Model.OpenCount</td>
+                            <td> @Model.ClickCount</td>
+                        </tr>
+
+                        <tr style="text-align:center; font-size:large">
+                            <td> Processed</td>
+                            <td> Delivered</td>
+                            <td> Deferred</td>
+                            <td> Open</td>
+                            <td> Clicks</td>
+                        </tr>
+
+                    </table>
+
+
+                    <div class="title" style="background-color:lightskyblue"><h4>There are @Model.UniqueUser Unique users</h4></div>
+                    <div>
+                        <table border="1" class="table">
+                            <tr>
+                                <th>Date</th>
+                                <th>TotalOpen</th>
+                                <th>AMSOpen</th>
+                                <th>EUROpen</th>
+                                <th>APJOpen</th>
+                                <th>UnGrouped</th>
+                            </tr>
+                            @foreach (var kvp in @Model.DateCount)
+                            {
+                                <tr>
+                                    <td>@kvp.Date</td>
+                                    <td>@kvp.Count</td>
+                                    <td>@kvp.AMSCount</td>
+                                    <td>@kvp.EURCount</td>
+                                    <td>@kvp.APJCount</td>
+                                    <td>@kvp.UnGrouped</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+
+                    <div class="title" style="background-color:lightskyblue"><h4>  @Model.UniqueClickUser Users Click in the URL</h4></div>
+
+                    <div>
+                        <table class="table table-striped">
+                            <tr>
+                                <th>Page URL</th>
+                                <th>Clicks</th>
+                            </tr>
+                            @foreach (var kvp in @Model.UrlCount)
+                            {
+                                <tr>
+                                    <td>@kvp.Url</td>
+                                    <td>@kvp.Count</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                    <div>
+                        <table border="1" class="table">
+                            <tr>
+                                <th>Region Code</th>
+                                <th>Open Count</th>
+                            </tr>
+                            @foreach (var kvp in @Model.RegionCodeCount)
+                            {
+                                <tr>
+                                    <td>@kvp.RegionCode</td>
+                                    <td>@kvp.Count</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                    <div class="table table-striped">
+                        @*<div class="col-md-6 col-sm-6 col-xs-12">*@
+                        @*<div class="x_panel">*@
+
+                        <table border=0 class="table table-striped">
+                            <tr>
+                                <td valign="top">
+                                    <table border="1" class="table">
+                                        <tr>
+                                            <th>AMS</th>
+                                            <th>Open Count</th>
+                                        </tr>
+                                        @foreach (var kvp in @Model.America)
+                                        {
+                                            <tr>
+                                                <td>@kvp.Country</td>
+                                                <td>@kvp.Count</td>
+                                            </tr>
+                                        }
+                                    </table>
+
+
+                                </td>
+                                <td valign="top">
+                                    <table border="1" class="table">
+                                        <tr>
+                                            <th>EUR</th>
+                                            <th>Open Count</th>
+                                        </tr>
+                                        @foreach (var kvp in @Model.Europe)
+                                        {
+                                            <tr>
+                                                <td>@kvp.Country</td>
+                                                <td>@kvp.Count</td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </td>
+
+
+                                <td valign="top">
+                                    <table border="1" class="table table-condensed">
+                                        <tr>
+                                            <th>APJ</th>
+                                            <th>Open Count</th>
+                                        </tr>
+                                        @foreach (var kvp in @Model.AsianPacific)
+                                        {
+                                            <tr>
+                                                <td>@kvp.Country</td>
+                                                <td>@kvp.Count</td>
+                                            </tr>
+                                        }
+                                    </table>
+                                    @*</div>*@
+                                    @*</div>*@
+                                </td>
+                        </table>
+                    </div>
+
+
+                    <div>
+                        <form action="/Employee/Search" method="post">
+                            <select name="Event">
+                                <option value="deferred">deferred</option>
+                                <option value="processed">processed</option>
+                                <option value="delivered">delivered</option>
+                                <option value="open">open</option>
+                                <option value="click">click</option>
+                            </select>
+
+                            <input type="submit" name="BtnSubmit" class="btn btn-primary" value="Submit" />
+                        </form>
+                    </div>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-8 col-12">
+                                <h3>
+                                    Deferred : @Model.DeferredCount, Processed : @Model.ProcessedCount Delivered : @Model.DeliveredCount
+                                    Open : @Model.OpenCount Click :@Model.ClickCount
+                                </h3>
+                                <br />
+                                <h3>Distinct user : @Model.UniqueUser</h3>
+                            </div>
+                            <div class="title">Email Information</div>
+                            <ul class="details">
+                                <li>
+                                    <span class="mdi mdi-email-outline"> Delivered : @Model.DeliveredCount</span>
+                                    <span class="mdi mdi-eye"> Open : @Model.OpenCount</span>
+                                    <span class="mdi mdi-cursor-pointer"> Click :@Model.ClickCount</span>
+                                </li>
+                                <li>
+                                    <span class="mdi mdi-telegram">27/03/18 - 07:00</span>
+                                </li>
+                                <li>
+                                    <span class="mdi mdi-calendar-clock">27/03/18 - 12:00</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <table border="1">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>TotalOpen</th>
+                                </tr>
+                                @foreach (var kvp in @Model.DateCount)
+                                {
+                                    <tr>
+                                        <td>@kvp.Date</td>
+                                        <td>@kvp.Count</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                        <div>
+                            <h3>Clicks    @Model.DateCount unique Users</h3>
+                        </div>
+                        <div>
+                            <table border="1">
+                                <tr>
+                                    <th>Page URL</th>
+                                    <th>Clicks</th>
+                                </tr>
+                                @foreach (var kvp in @Model.UrlCount)
+                                {
+                                    <tr>
+                                        <td>@kvp.Url</td>
+                                        <td>@kvp.Count</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                        <div>
+                            <table border="1" class="table">
+                                <tr>
+                                    <th>Region Code</th>
+                                    <th>Open Count</th>
+                                </tr>
+                                @foreach (var kvp in @Model.RegionCodeCount)
+                                {
+                                    <tr>
+                                        <td>@kvp.RegionCode</td>
+                                        <td>@kvp.Count</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+
+                        <h3>America</h3>
+                        <div>
+                            <table border="1">
+                                <tr>
+                                    <th>Country</th>
+                                    <th>Open Count</th>
+                                </tr>
+                                @foreach (var kvp in @Model.America)
+                                {
+                                    <tr>
+                                        <td>@kvp.Country</td>
+                                        <td>@kvp.Count</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+
+                        <h3>Europe</h3>
+                        <div>
+                            <table border="1">
+                                <tr>
+                                    <th>Country</th>
+                                    <th>Open Count</th>
+                                </tr>
+                                @foreach (var kvp in @Model.Europe)
+                                {
+                                    <tr>
+                                        <td>@kvp.Country</td>
+                                        <td>@kvp.Count</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+
+                        <h3>AsianPacific</h3>
+                        <div>
+                            <table border="1">
+                                <tr>
+                                    <th>Country</th>
+                                    <th>Open Count</th>
+                                </tr>
+                                @foreach (var kvp in @Model.AsianPacific)
+                                {
+                                    <tr>
+                                        <td>@kvp.Country</td>
+                                        <td>@kvp.Count</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                        @*   <table border="1">
+                <tr>
+                    <th>Id</th>
+                    <th>Email</th>
+                    <th>Event1</th>
+                    <th>timeStamp</th>
+                </tr>
+                @foreach (EmployeeViewModel item in Model.Employees)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.email</td>
+                        <td>@item.event1</td>
+                        <td>@item.timestamp</td>
+                    </tr>
+                }
+            </table>
+                        *@
+                    </div>
+                </div>
+                </div>
+            </div>
+
+                <!-- footer content -->
+                <footer>
+                    <div class="pull-right">
+                        Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </footer>
+                <!-- /footer content -->
+            </div>
+
+
+
+        <!-- jQuery -->
+        <script src="~/UI/vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/UI/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="~/UI/vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="~/UI/vendors/nprogress/nprogress.js"></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src="~/UI/build/js/custom.js"></script>
+    </body>
+</html>
+
