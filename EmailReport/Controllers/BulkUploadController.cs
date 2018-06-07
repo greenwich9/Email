@@ -40,7 +40,7 @@ namespace EmailReport.Controllers
         private List<LogRecord> GetRecords(FileUploadViewModel model)
         {
             List<LogRecord> employees = new List<LogRecord>();
-            StreamReader csvreader = new StreamReader(model.FileUpload.InputStream);
+            StreamReader csvreader = new StreamReader(model.file.InputStream);
             csvreader.ReadLine(); // Assuming first line is header
             while (!csvreader.EndOfStream)
             {
@@ -64,7 +64,7 @@ namespace EmailReport.Controllers
         private List<Employee> GetEmployees(FileUploadViewModel model)
         {
             List<Employee> employeesInfo = new List<Employee>();
-            StreamReader csvreader = new StreamReader(model.FileUpload.InputStream);
+            StreamReader csvreader = new StreamReader(model.file.InputStream);
             csvreader.ReadLine(); // Assuming first line is header
             int i = 0;
             while (!csvreader.EndOfStream)

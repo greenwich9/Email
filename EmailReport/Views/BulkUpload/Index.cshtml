@@ -3,6 +3,64 @@
 
 @section HeaderSection{
     <script src="~/Scripts/fileUpload.js" type="text/javascript"></script>
+
+    <link href="~/UI/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="~/UI/upload.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="~/UI/vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- Dropzone.js -->
+    <link href="~/UI/vendors/dropzone/dist/min/dropzone.min.css" rel="stylesheet">
+    <script src="~/UI/vendors/nprogress/nprogress.js"></script>
+    <!-- Dropzone.js -->
+    <script src="~/UI/vendors/dropzone/dist/min/dropzone.min.js"></script>
+   <script>
+       function show() {
+           document.getElementById("div_wait").style.display = "";
+       }
+       function hide() {
+           document.getElementById("div_wait").style.display = "none";
+       }
+      
+       //Disabling autoDiscover
+       $(function () {
+           //Dropzone class
+           Dropzone.autoDiscover = false;
+           var myDropzone = new Dropzone("#dropzone1");
+           myDropzone.on("uploadprogress", function () {
+               //Redirect URL
+               show();
+               console.log('upload');
+           });
+
+      
+           
+           myDropzone.on("queuecomplete", function () {
+               //Redirect URL
+               hide();
+               window.location.href = '/Report';
+           });
+           
+       });
+
+       $(function () {
+           //Dropzone class
+           var myDropzone = new Dropzone("#dropzone2");
+           myDropzone.on("uploadprogress", function () {
+               //Redirect URL
+               show();
+               console.log('upload');
+           });
+           myDropzone.on("queuecomplete", function () {
+               //Redirect URL
+               hide();
+               window.location.href = '/Report';
+           });
+       });
+ 
+
+    </script>
+
+
 }
 @{
     Layout = "~/Views/Shared/MyLayout.cshtml";
@@ -12,22 +70,56 @@
     Bulk Upload
 }
 @section ContentBody{
-    <div class="right_col" role="main">
-        <div id="file-uploader">
-            <a href="/Report/Index">Back</a>
-            <h3>Upload Newsletter Log</h3>
-            <form action="/BulkUpload/Upload" method="post" enctype="multipart/form-data">
-                Select File : <input type="file" name="FileUpload" value="" />
-                <input type="submit" name="name" value="Upload" class="wait" onclick="show()" />
-            </form>
-            <h3>Upload Employee Information</h3>
-            <form action="/BulkUpload/UploadEmployeeInfo" method="post" enctype="multipart/form-data">
-                Select File : <input type="file" name="FileUpload" value="" />
-                <input type="submit" name="name" value="Upload" class="wait" onclick="show()" />
-            </form>
-            <div id="div_wait" style="width:200px;height:25px;border:solid 1px red;margin-left: auto; margin-right: auto;display:none;text-align:center; ">
-                Uploading...
-            </div>
-        </div>
-    </div>
+   <div class="right_col" role="main">
+
+       <div class="">
+           <div class="page-title">
+               <div class="title_left">
+                   <h3>Form Upload </h3>
+               </div>
+
+               <div class="title_right">
+                   <a href="/Report/Index" class="btn btn-default pull-right">Back</a>
+               </div>
+           </div>
+
+           <div class="clearfix"></div>
+
+           <div class="row">
+               <div class="col-md-12 col-sm-12 col-xs-12">
+                   <div class="x_panel">
+                       <div class="x_title">
+                           <h2>Upload Newspaper Log</h2>
+                           <div class="clearfix"></div>
+                       </div>
+                       <div class="x_content">
+                           <form action="/BulkUpload/Upload" class="dropzone" id="dropzone1" enctype="multipart/form-data"></form>
+
+                       </div>
+                   </div>
+               </div>
+           </div>
+
+           <div class="progress">
+               <div class="progress-bar progress-bar-primary" role="progressbar" data-dz-uploadprogress>
+                   <span class="progress-text"></span>
+               </div>
+           </div>
+           <div class="row">
+               <div class="col-md-12 col-sm-12 col-xs-12">
+                   <div class="x_panel">
+                       <div class="x_title">
+                           <h2>Upload Employee Information</h2>
+                           <div class="clearfix"></div>
+                       </div>
+                       <div class="x_content">
+                           <form action="/BulkUpload/UploadEmployeeInfo" class="dropzone" id="dropzone2" enctype="multipart/form-data"></form>
+
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </div>
+       <div class="loader" style="display:none;" id="div_wait"></div>
+   </div>
 }

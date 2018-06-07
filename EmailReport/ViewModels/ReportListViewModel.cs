@@ -23,5 +23,6 @@ namespace EmailReport.ViewModels
         public List<CountryCount> America { get; set; }
         public List<CountryCount> AsianPacific { get; set; }
         public List<CountryCount> Europe { get; set; }
+        public Boolean HasEmployeeData { get; set; }
     }
 }

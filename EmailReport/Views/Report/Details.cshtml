@@ -1,0 +1,46 @@
+﻿
+@using EmailReport.ViewModels
+@model ReportListDetailsViewModel
+
+@{
+    Layout = "~/Views/Shared/MyLayout.cshtml";
+}
+
+
+@section TitleSection{
+    Search
+}
+
+@section ContentBody{
+<div class="right_col" role="main">
+    <div class="container text-center">
+        <h1>@Model.Event1</h1>
+        <h3>@Model.CurCount users</h3>
+        <table class="table table-striped jambo_table" style="text-align:center">
+            <thead style="text-align:center">
+                <tr class="headings" style="text-align:center">
+                    <th class="column-title">Id</th>
+                    <th class="column-title">Email</th>
+                    <th class="column-title">Count</th>
+                    <th class="column-title">Region Code</th>
+                    <th class="column-title">Country</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (ReportDetailsViewModel item in @Model.Records)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Email</td>
+                        <td>@item.Count</td>
+                        <td>@item.AreaCode</td>
+                        <td>@item.Country</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+}
+

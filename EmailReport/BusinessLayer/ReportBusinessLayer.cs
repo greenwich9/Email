@@ -16,7 +16,7 @@ namespace EmailReport.BusinessLayer
             return ReportsDal.Records.ToList();
         }
 
-        public List<Employee> GetAreaInfo()
+        public List<Employee> GetEmployees()
         {
             
             ReportsERPDAL ReportsDal = new ReportsERPDAL();
@@ -61,10 +61,10 @@ namespace EmailReport.BusinessLayer
             ReportsDal.SaveChanges();
         }
 
-        public void UploadReportsRegionInfo(List<Employee> areaInfo)
+        public void UploadReportsRegionInfo(List<Employee> employees)
         {
             ReportsERPDAL ReportsDal = new ReportsERPDAL();
-            ReportsDal.Employees.AddRange(areaInfo);
+            ReportsDal.Employees.AddRange(employees);
             ReportsDal.SaveChanges();
         }
     }

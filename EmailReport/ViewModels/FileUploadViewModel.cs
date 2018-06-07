@@ -7,6 +7,6 @@ namespace EmailReport.ViewModels
 {
     public class FileUploadViewModel
     {
-        public HttpPostedFileBase FileUpload { get; set; }
+        public HttpPostedFileBase file { get; set; }
     }
 }
