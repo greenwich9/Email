@@ -6,7 +6,7 @@ using System.Web;
 
 namespace EmailReport.ViewModels
 {
-    public class ReportListViewModel
+    public class ReportListViewModel : BaseViewModel
     {
         public List<ReportViewModel> Records { get; set; }
         public int ProcessedCount { get; set; }
@@ -18,11 +18,31 @@ namespace EmailReport.ViewModels
         public List<DateCount> DateCount { get; set; }
         public List<UrlCount> UrlCount { get; set; }
         public int UniqueClickUser { get; set; }
-        // public Dictionary<string, int> dic { get; set; }
+
         public List<RegionCodeCount> RegionCodeCount { get; set; }
         public List<CountryCount> America { get; set; }
         public List<CountryCount> AsianPacific { get; set; }
         public List<CountryCount> Europe { get; set; }
         public Boolean HasEmployeeData { get; set; }
+        
+
+        public ReportListViewModel()
+        {
+            Records = new List<ReportViewModel>();
+            RegionCodeCount = new List<RegionCodeCount>();
+            America = new List<CountryCount>();
+            Europe = new List<CountryCount>();
+            AsianPacific = new List<CountryCount>();
+            DateCount = new List<DateCount>();
+            UrlCount = new List<UrlCount>();
+            L1List = new List<string>();
+            L2List = new List<string>();
+            L3List = new List<string>();
+            L4List = new List<string>();
+            L5List = new List<string>();
+            RegionList = new List<string>();
+            CountryList = new List<string>();
+            StatusList = new List<string>();
+        }
     }
 }

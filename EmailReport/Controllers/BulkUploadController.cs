@@ -19,6 +19,14 @@ namespace EmailReport.Controllers
         {
             FileUploadViewModel fileUpload = new FileUploadViewModel();
 
+            fileUpload.L1List = GlobalVariables.Base.L1List;
+            fileUpload.L2List = GlobalVariables.Base.L2List;
+            fileUpload.L3List = GlobalVariables.Base.L3List;
+            fileUpload.L4List = GlobalVariables.Base.L4List;
+            fileUpload.L5List = GlobalVariables.Base.L5List;
+            fileUpload.CountryList = GlobalVariables.Base.CountryList;
+            fileUpload.RegionList = GlobalVariables.Base.RegionList;
+            fileUpload.StatusList = GlobalVariables.Base.StatusList;
             return View(fileUpload);
         }
 
@@ -42,19 +50,22 @@ namespace EmailReport.Controllers
             List<LogRecord> employees = new List<LogRecord>();
             StreamReader csvreader = new StreamReader(model.file.InputStream);
             csvreader.ReadLine(); // Assuming first line is header
+            System.Diagnostics.Debug.WriteLine("begin");
             while (!csvreader.EndOfStream)
             {
                 var line = csvreader.ReadLine();
                 string[] values = Regex.Split(line, "(?<=^[^\"]*(?:\"[^\"]*\"[^\"]*)*),(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
                 //var values = line.Split(',');//Values are comma separated
-                if (!values[0].Equals("Id"))
+                if (values.Count() == 0 || values[0].Equals("")) break;
+                if (!values[0].Equals("DataInclude"))
                 {
+                    
                     LogRecord e = new LogRecord();
-                    e.Id = values[0];
-                    e.DateInclude = values[1];
-                    e.Email = values[2];
-                    e.Event1 = values[3];
-                    e.Url = values[9];
+                    
+                    e.DateInclude = values[0];
+                    e.Email = values[1];
+                    e.Event1 = values[2];
+                    e.Url = values[8];
                     employees.Add(e);
                 }
             }
@@ -73,7 +84,7 @@ namespace EmailReport.Controllers
                 var line = csvreader.ReadLine();
                 string[] values = Regex.Split(line, "(?<=^[^\"]*(?:\"[^\"]*\"[^\"]*)*),(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
                 //var values = line.Split(',', "(?= ([^\\\"]*\\\"[^\\\"]*\\\")*[^\\\"]*$)");//Values are comma separated
-                if (values.Count() != 13)
+                if (values.Count() != 15)
                 {
                     System.Diagnostics.Debug.WriteLine(values.Count());
                     System.Diagnostics.Debug.WriteLine(i);
@@ -83,13 +94,18 @@ namespace EmailReport.Controllers
                     }
                 }
 
-                if (!values[0].Equals("Employee ID"))
+                if (!values[0].Equals("Email"))
                 {
                     Employee e = new Employee();
-                    e.EmpId = values[0];
-                    e.Email = values[1];
-                    e.AreaCode = values[9];
-                    e.Country = values[12];
+                    e.Email = values[0];
+                    e.L1 = values[3];
+                    e.L2 = values[4];
+                    e.L3 = values[5];
+                    e.L4 = values[6];
+                    e.L5 = values[7];
+                    e.AreaCode = values[8];
+                    e.Country = values[9];
+                    e.Status = values[11];
                     employeesInfo.Add(e);
                 }
             }

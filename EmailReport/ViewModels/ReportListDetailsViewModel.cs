@@ -5,7 +5,7 @@ using System.Web;
 
 namespace EmailReport.ViewModels
 {
-    public class ReportListDetailsViewModel 
+    public class ReportListDetailsViewModel : BaseViewModel
     {
         public List<ReportDetailsViewModel> Records { get; set; }
         public int CurCount { get; set; }

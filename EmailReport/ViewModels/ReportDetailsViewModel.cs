@@ -13,5 +13,11 @@ namespace EmailReport.ViewModels
         public string AreaCode { get; set; }
         public string Country { get; set; }
         public int Count { get; set; }
+        public string L1 { get; set; }
+        public string L2 { get; set; }
+        public string L3 { get; set; }
+        public string L4 { get; set; }
+        public string L5 { get; set; }
+        public string Status { get; set; }
     }
 }

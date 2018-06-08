@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using EmailReport.ViewModels
+@model BaseViewModel
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -18,7 +21,9 @@
     <script src="http://www.chartjs.org/dist/2.7.2/Chart.bundle.js"></script>
     <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
     <!-- jQuery -->
+
     <script src="~/UI/vendors/jquery/dist/jquery.min.js"></script>
+
     <!-- Bootstrap -->
     <script src="~/UI/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- FastClick -->
@@ -32,7 +37,7 @@
             display: none;
         }
     </style>
-
+    <link href="~/UI/multiple-select.css" rel="stylesheet" />
     <!-- Bootstrap -->
     <link href="~/UI/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -43,7 +48,9 @@
     <!-- Custom Theme Style -->
     <link href="~/UI/build/css/custom.min.css" rel="stylesheet">
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gijgo@1.9.6/js/gijgo.min.js" type="text/javascript"></script>
 
+    <link href="https://cdn.jsdelivr.net/npm/gijgo@1.9.6/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     @RenderSection("HeaderSection", false)
 </head>
 
@@ -52,37 +59,193 @@
         <div class="main_container">
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
+                    <div class="navbar nav_title" style="border: 0;">
+                        <a href="index.html" class="site_title"><i class="fa fa-bar-chart"></i> <span>Overview</span></a>
+                    </div>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
 
-                   
-                    
-                </div>
-            </div>
-            <div class="top_nav">
-                <div class="nav_menu">
-                    <nav>
-                        <div class="nav toggle">
-                            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                        <div class="menu_section">
+                            <h2>Filter</h2>
+                            <form action="/Report/DateRange" method="post" class="form-group align-self-end ;">
+                                <ul class="nav side-menu">
+                                    <li>
+                                        <label for="StartDate" class="form-inline" style="font-size:large; vertical-align: top"> From : <input id="StartDate" name="StartDate" width="200" style="vertical-align: bottom" /></label>
+                                        <script>
+                                            $('#StartDate').datepicker({
+
+                                                uiLibrary: 'bootstrap'
+                                            });
+                                        </script>
+                                    </li>
+                                    <li>
+                                        <label for="EndDate" class="form-inline" style="font-size:large; vertical-align: top">  To : <input id="EndDate" name="EndDate" style="vertical-align: middle" width="200" /></label>
+                                        <script>
+                                            $('#EndDate').datepicker({
+                                                uiLibrary: 'bootstrap'
+                                            });
+                                        </script>
+
+
+                                    </li>
+                                    <li>
+                                        <h5>L1</h5>
+                                        <select multiple="multiple" style="width:85%; margin:0, auto" name="L1">
+                                            @foreach (var l1 in @Model.L1List)
+                                            {
+                                                <option value='@l1'>@l1</option>
+                                            }
+                                        </select>
+                                        <script src="~/Scripts/multiple-select.js"></script>
+                                        <script>
+                                            $("select").multipleSelect({
+                                                placeholder: "Please select L1 Value"
+                                            });
+                                        </script>
+                                    </li>
+                                    <li>
+                                        <h5>L2</h5>
+                                        <select multiple="multiple" style="width:85%; margin:0, auto">
+                                            @foreach (var l2 in @Model.L2List)
+                                            {
+                                                <option value='@l2'>@l2</option>
+                                            }
+                                        </select>
+                                        <script src="~/Scripts/multiple-select.js"></script>
+                                        <script>
+                                            $("select").multipleSelect({
+                                                placeholder: "Please select L2 Value"
+                                            });
+                                        </script>
+                                    </li>
+                                    <li>
+                                        <h5>L3</h5>
+                                        <select multiple="multiple" style="width:85%; margin:0, auto">
+                                            @foreach (var l3 in @Model.L3List)
+                                            {
+                                                <option value='@l3'>@l3</option>
+                                            }
+                                        </select>
+                                        <script src="~/Scripts/multiple-select.js"></script>
+                                        <script>
+                                            $("select").multipleSelect({
+                                                placeholder: "Please select L3 Value"
+                                            });
+                                        </script>
+                                    </li>
+                                    <li>
+                                        <h5>L4</h5>
+                                        <select multiple="multiple" style="width:85%; margin:0, auto">
+                                            @foreach (var l4 in @Model.L4List)
+                                            {
+                                                <option value='@l4'>@l4</option>
+                                            }
+                                        </select>
+                                        <script src="~/Scripts/multiple-select.js"></script>
+                                        <script>
+                                            $("select").multipleSelect({
+                                                placeholder: "Please select L4 Value"
+                                            });
+                                        </script>
+                                    </li>
+                                    <li>
+                                        <h5>L5</h5>
+                                        <select multiple="multiple" style="width:85%; margin:0, auto">
+                                            @foreach (var l5 in @Model.L5List)
+                                            {
+                                                <option value='@l5'>@l5</option>
+                                            }
+                                        </select>
+                                        <script src="~/Scripts/multiple-select.js"></script>
+                                        <script>
+                                            $("select").multipleSelect({
+                                                placeholder: "Please select L5 Value"
+                                            });
+                                        </script>
+                                    </li>
+                                    <li>
+                                        <h5>Region</h5>
+                                        <select multiple="multiple" style="width:85%; margin:0, auto">
+                                            @foreach (var re in @Model.RegionList)
+                                            {
+                                                <option value='@re'>@re</option>
+                                            }
+                                        </select>
+                                        <script src="~/Scripts/multiple-select.js"></script>
+                                        <script>
+                                            $("select").multipleSelect({
+                                                placeholder: "Please select region"
+                                            });
+                                        </script>
+                                    </li>
+                                    <li>
+                                        <h5>Country</h5>
+                                        <select multiple="multiple" style="width:85%; margin:0, auto">
+                                            @foreach (var co in @Model.CountryList)
+                                            {
+                                                <option value='@co'>@co</option>
+                                            }
+                                        </select>
+                                        <script src="~/Scripts/multiple-select.js"></script>
+                                        <script>
+                                            $("select").multipleSelect({
+                                                placeholder: "Please select country"
+                                            });
+                                        </script>
+                                    </li>
+                                    <li>
+                                        <h5>Status</h5>
+                                        <select multiple="multiple" style="width:85%; margin:0, auto">
+                                            @foreach (var st in @Model.StatusList)
+                                            {
+                                                <option value='@st'>@st</option>
+                                            }
+                                        </select>
+                                        <script src="~/Scripts/multiple-select.js"></script>
+                                        <script>
+                                            $("select").multipleSelect({
+                                                placeholder: "Please select status"
+                                            });
+                                        </script>
+                                    </li>
+
+                                    <li>
+                                        <input type="submit" name="BtnSubmit" class="btn btn-primary" style="vertical-align: top" value="Submit" />
+                                    </li>
+                                </ul>
+                            </form>
                         </div>
- 
-                    </nav>
+                    </div>
                 </div>
             </div>
 
-            @RenderSection("ContentBody")
-
-            <footer>
-                <div class="pull-right">
-                    Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+                <div class="top_nav">
+                    <div class="nav_menu">
+                        <nav>
+                            <div class="nav toggle">
+                                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                            </div>
+                            <a href="/BulkUpload/Index" style="font-size:large" class="btn btn-default pull-right">Upload</a>
+                        </nav>
+                    </div>
                 </div>
-                <div class="clearfix"></div>
-              
-            </footer>
-            <!-- /footer content -->
-           
 
-            <!-- Custom Theme Scripts -->
-           @* <script src="~/UI/build/js/custom.js"></script>*@
-        </div>
+                @RenderSection("ContentBody")
+
+                <footer>
+                    <div class="pull-right">
+                        Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+                    </div>
+                    <div class="clearfix"></div>
+
+                </footer>
+                <!-- /footer content -->
+                <!-- Custom Theme Scripts -->
+                @* <script src="~/UI/build/js/custom.js"></script>*@
+            </div>
     </div>
 </body>
 </html>

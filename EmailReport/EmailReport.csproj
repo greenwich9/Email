@@ -173,6 +173,7 @@
     <Compile Include="Models\RegionCodeCount.cs" />
     <Compile Include="Models\UrlCount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\FileUploadViewModel.cs" />
     <Compile Include="ViewModels\ReportDetailsViewModel.cs" />
     <Compile Include="ViewModels\ReportListDetailsViewModel.cs" />
@@ -206,6 +207,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\multiple-select.js" />
     <Content Include="UI\build\css\custom.css" />
     <Content Include="UI\build\css\custom.min.css" />
     <Content Include="UI\build\images\back_disabled.png" />
@@ -256,6 +258,8 @@
     <Content Include="UI\js\datepicker\daterangepicker.js" />
     <Content Include="UI\js\moment\moment.min.js" />
     <Content Include="UI\js\PiePlot.js" />
+    <Content Include="UI\multiple-select.css" />
+    <Content Include="UI\multiple-select.png" />
     <Content Include="UI\production\calendar.html" />
     <Content Include="UI\production\chartjs.html" />
     <Content Include="UI\production\chartjs2.html" />

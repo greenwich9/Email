@@ -10,13 +10,18 @@ namespace EmailReport.Models
     public class Employee
     {
         [Key]
-        [Column("Employee ID")]
-        public string EmpId { get; set; }
-        [Column("E-Mail Address")]
+        public int Id { get; set; }
+        [Column("Email")]
         public string Email { get; set; }
-        [Column("Legal Company Region Code")]
+        public string L1 { get; set; }
+        public string L2 { get; set; }
+        public string L3 { get; set; }
+        public string L4 { get; set; }
+        public string L5 { get; set; }
+        [Column("Region")]
         public string AreaCode { get; set; }
-        [Column("Payroll Country Code")]
+        [Column("Country")]
         public string Country { get; set; }
+        public string Status { get; set; }
     }
 }

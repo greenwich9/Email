@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmailReport.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -30,6 +31,18 @@ namespace EmailReport.Models
             set
             {
                 HttpContext.Current.Application["End"] = value;
+            }
+        }
+
+        public static BaseViewModel Base
+        {
+            get
+            {
+                return (BaseViewModel)HttpContext.Current.Application["Base"];
+            }
+            set
+            {
+                HttpContext.Current.Application["Base"] = value;
             }
         }
     }
