@@ -26,15 +26,19 @@ namespace EmailReport.Controllers
             List<ReportViewModel> reportViewModels = new List<ReportViewModel>();
 
             //get employee info from DB
-            List<Employee> employees = new List<Employee>();
-            employees = empBal.GetEmployees();
-            var ep = from e in employees
+            List<Employee> allEmployees = new List<Employee>();
+            allEmployees = empBal.GetEmployees();
+
+            // group by email so that repetiotiones in the data won't affect the result
+            var ep = from e in allEmployees
                         group e by e.Email into grp
                         select new Employee{ Email = grp.Key, L1 = grp.Last().L1, L2 = grp.Last().L2, L3 = grp.Last().L3, L4 = grp.Last().L4, L5 = grp.Last().L5,
                             AreaCode = grp.Last().AreaCode, Country = grp.Last().Country, Status = grp.Last().Status};
-            employees = (List<Employee>)ep.ToList();
+
+            
+            List<Employee> employees = (List<Employee>)ep.ToList();
             //System.Diagnostics.Debug.WriteLine(employees.Count());
-            // initialize regionCodeCount list incase null pointer exception
+            // initialize regionCodeCount list to avoid null pointer exception
             List < RegionCodeCount > regionCodeCount = new List<RegionCodeCount>();
             var i = 0;
             for (i = 0; i < 4; i++)
@@ -45,13 +49,9 @@ namespace EmailReport.Controllers
             }
             ReportListViewModel.RegionCodeCount = regionCodeCount;
            
-            //ReportListViewModel.AsianPacific = new List<CountryCount>();
-            //if (allReports.Count() == 0)
-            //{
-            //    return View("Index", ReportListViewModel);
-            //}
+           
 
-            // initialize baseview model
+            // initialize base view model
             BaseViewModel Base = new BaseViewModel();
             var L1 = from e in employees
                     select e.L1;
@@ -77,8 +77,6 @@ namespace EmailReport.Controllers
             List<string> L4l = L4.Distinct().ToList();
             L4l.Sort();
             Base.L4List = L4l;
-
-            
 
             var L5 = from e in employees
                      select e.L5;
@@ -108,8 +106,8 @@ namespace EmailReport.Controllers
             Statusl.Sort();
             Base.StatusList = Statusl;
 
+            //Reset gloabal variables
             GlobalVariables.Base = Base;
-
             GlobalVariables.L1List = L1l;
             GlobalVariables.L2List = L2l;
             GlobalVariables.L3List = L3l;
@@ -128,25 +126,22 @@ namespace EmailReport.Controllers
             ReportListViewModel.RegionList = GlobalVariables.Base.RegionList;
             ReportListViewModel.StatusList = GlobalVariables.Base.StatusList;
 
-            //set the date range to show
+            //set the date range to show, default is one month ago untill now
             DateTime End = DateTime.Today;
             DateTime Start = DateTime.Today.AddMonths(-1);
             ReportListViewModel.Start = Start.ToString("d");
             ReportListViewModel.End = End.ToString("d");
 
-            System.Diagnostics.Debug.WriteLine(Start);
-            System.Diagnostics.Debug.WriteLine(End);
 
             GlobalVariables.Start = Start.ToString("o").Substring(0, 10);
             GlobalVariables.End = End.ToString("o").Substring(0, 10);
 
+            // select the records within this data range
             var aReports = from m in allReports
-
                           where (GlobalVariables.Start.CompareTo(DateTime.Parse(m.DateInclude).ToString("o").Substring(0, 10)) <= 0 && GlobalVariables.End.CompareTo(DateTime.Parse(m.DateInclude).ToString("o").Substring(0, 10)) >= 0)
                           select m;
             List<LogRecord> Reports = aReports.ToList();
-            //var records = from m in Reports
-            //           select m;
+
 
             var email = from m in Reports                      
                         select m.Email;
@@ -160,18 +155,11 @@ namespace EmailReport.Controllers
                            where m.Event1 == "open"
                            orderby DateTime.Parse(m.DateInclude).ToString("o").Substring(0, 10)
                            group m by DateTime.Parse(m.DateInclude).ToString("o").Substring(0, 10) into grp
-                           select new { key = grp.Key, cnt = grp.Count() };
+                           select new DateCount{ Date = grp.Key, Count = grp.Count() };
 
             // store the info of date into list
-            List<DateCount> dateCount = new List<DateCount>();
-            foreach (var item in dateInfo)
-            {
-                DateCount date = new DateCount();
-                date.Date = item.key;
-
-                date.Count = item.cnt;
-                dateCount.Add(date);
-            }
+            List<DateCount> dateCount = dateInfo.ToList();
+            
 
 
             //find out the infomaition of the openned emails
@@ -187,7 +175,6 @@ namespace EmailReport.Controllers
             {
                 
                 int APJCount = 0;
-                
                 int AMSCount = 0;
                 int EMEACount = 0;
                 int UnGrouped = 0;
@@ -216,8 +203,7 @@ namespace EmailReport.Controllers
                         }
                     }                  
                 }
-                item.AMSCount = AMSCount;
-                
+                item.AMSCount = AMSCount; 
                 item.APJCount = APJCount;
                 item.EMEACount = EMEACount;
                 item.UnGrouped = UnGrouped;
@@ -272,9 +258,8 @@ namespace EmailReport.Controllers
                 return View("Index", ReportListViewModel);
             }
 
-            // get the number of 
-            var regionCode = from m in open.Distinct()
-                             
+            // get the number of people who open the emails from different regions
+            var regionCode = from m in open.Distinct()                           
                              join code in employees on m equals code.Email
                              group code by code.AreaCode into grp
                              select new { code = grp.Key, cnt = grp.Distinct().Count() };
@@ -318,12 +303,8 @@ namespace EmailReport.Controllers
 
             }
 
-        
-
             regionCodeCount.ElementAt(3).RegionCode = "Ungrouped";
             regionCodeCount.ElementAt(3).Count = upgroupedCount;
-
-
             ReportListViewModel.RegionCodeCount = regionCodeCount;
 
 
@@ -406,8 +387,6 @@ namespace EmailReport.Controllers
 
         public ActionResult Details(string id)
         {
-            
-
 
             ReportListDetailsViewModel reportListDetailsViewModel = new ReportListDetailsViewModel();
             ReportBusinessLayer empBal = new ReportBusinessLayer();
@@ -475,7 +454,7 @@ namespace EmailReport.Controllers
         }
 
 
-
+        [HttpPost]
         public ActionResult DateRange()
         {
             if (Request.Form["StartDate"].Length != 0)
@@ -486,14 +465,7 @@ namespace EmailReport.Controllers
             {
                 GlobalVariables.End = DateTime.Parse(Request.Form["EndDate"]).ToString("o").Substring(0, 10);
             }
-            //string queryDate = "";
-            //if (!Start.Equals(""))
-            //{
-            //    queryDate = Start + ".CompareTo(DateTime.Parse(m.DateInclude).ToString(\"o\").Substring(0, 10)) <= 0 &&" + End +
-            //    ".CompareTo(DateTime.Parse(m.DateInclude).ToString(\"o\").Substring(0, 10)) >= 0)";
-            //}
 
-            
             ReportListViewModel ReportListViewModel = new ReportListViewModel();
             ReportBusinessLayer empBal = new ReportBusinessLayer();
             List<LogRecord> AllRecords = empBal.GetRecords();
@@ -747,8 +719,6 @@ namespace EmailReport.Controllers
             }
             ReportListViewModel.DateCount = finalDateCount;
 
-
-
             var clickUser = from m in Reports
                             where m.Event1 == "click"
                             select m.Email;
@@ -769,9 +739,6 @@ namespace EmailReport.Controllers
                 urlCount.Add(url);
             }
             ReportListViewModel.UrlCount = urlCount;
-
-
-
 
             var open = from re in Reports
                        where re.Event1 == "open"
@@ -921,8 +888,7 @@ namespace EmailReport.Controllers
             ReportListViewModel.RegionList = GlobalVariables.Base.RegionList;
             ReportListViewModel.StatusList = GlobalVariables.Base.StatusList;
             return View("Index", ReportListViewModel);
-
-            
+      
         }
     }
 }
