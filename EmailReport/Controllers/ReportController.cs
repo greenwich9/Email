@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using EmailReport.ViewModels;
 using EmailReport.BusinessLayer;
 using System.Text.RegularExpressions;
+using System.Web.Script.Serialization;
 
 namespace EmailReport.Controllers
 {
@@ -19,9 +20,9 @@ namespace EmailReport.Controllers
 
             ReportListViewModel ReportListViewModel = new ReportListViewModel();
             ReportBusinessLayer empBal = new ReportBusinessLayer();
-            ReportListViewModel.HasEmployeeData = false;
+
             //get log recordsords from DB
-            List<LogRecord> Reports = empBal.GetRecords();
+            List<LogRecord> allReports = empBal.GetRecords();
             List<ReportViewModel> reportViewModels = new List<ReportViewModel>();
 
             //get employee info from DB
@@ -42,7 +43,7 @@ namespace EmailReport.Controllers
             ReportListViewModel.RegionCodeCount = regionCodeCount;
            
             //ReportListViewModel.AsianPacific = new List<CountryCount>();
-            if (Reports.Count() == 0)
+            if (allReports.Count() == 0)
             {
                 return View("Index", ReportListViewModel);
             }
@@ -63,27 +64,28 @@ namespace EmailReport.Controllers
 
             var L3 = from e in employees
                      select e.L3;
-            List<string> L3l = L1.Distinct().ToList();
+            List<string> L3l = L3.Distinct().ToList();
             L3l.Sort();
 
             Base.L3List = L3l;
 
             var L4 = from e in employees
                      select e.L4;
-            List<string> L4l = L1.Distinct().ToList();
+            List<string> L4l = L4.Distinct().ToList();
             L4l.Sort();
             Base.L4List = L4l;
 
+            
 
             var L5 = from e in employees
                      select e.L5;
-            List<string> L5l = L1.Distinct().ToList();
+            List<string> L5l = L5.Distinct().ToList();
             L5l.Sort();
             Base.L5List = L5l;
 
-            var Country = from e in employees
+            var CountryList = from e in employees
                      select e.Country;
-            List<string> Countryl = Country.Distinct().ToList();
+            List<string> Countryl = CountryList.Distinct().ToList();
             Countryl.Sort();
             Base.CountryList = Countryl;
 
@@ -100,7 +102,15 @@ namespace EmailReport.Controllers
             Base.StatusList = Statusl;
 
             GlobalVariables.Base = Base;
-                 
+
+            GlobalVariables.L1List = L1l;
+            GlobalVariables.L2List = L2l;
+            GlobalVariables.L3List = L3l;
+            GlobalVariables.L4List = L4l;
+            GlobalVariables.L5List = L5l;
+            GlobalVariables.RegionList = Regionl;
+            GlobalVariables.CountryList = Countryl;
+            GlobalVariables.StatusList = Statusl;
 
             ReportListViewModel.L1List = GlobalVariables.Base.L1List;
             ReportListViewModel.L2List = GlobalVariables.Base.L2List;
@@ -112,8 +122,22 @@ namespace EmailReport.Controllers
             ReportListViewModel.StatusList = GlobalVariables.Base.StatusList;
 
             //set the date range to show
-            GlobalVariables.Start = "0000-00-00";
-            GlobalVariables.End = "9999-99-99";
+            DateTime End = DateTime.Today;
+            DateTime Start = DateTime.Today.AddMonths(-1);
+            ReportListViewModel.Start = Start.ToString("d");
+            ReportListViewModel.End = End.ToString("d");
+
+            System.Diagnostics.Debug.WriteLine(Start);
+            System.Diagnostics.Debug.WriteLine(End);
+
+            GlobalVariables.Start = Start.ToString("o").Substring(0, 10);
+            GlobalVariables.End = End.ToString("o").Substring(0, 10);
+
+            var aReports = from m in allReports
+
+                          where (GlobalVariables.Start.CompareTo(DateTime.Parse(m.DateInclude).ToString("o").Substring(0, 10)) <= 0 && GlobalVariables.End.CompareTo(DateTime.Parse(m.DateInclude).ToString("o").Substring(0, 10)) >= 0)
+                          select m;
+            List<LogRecord> Reports = aReports.ToList();
             //var records = from m in Reports
             //           select m;
 
@@ -156,8 +180,9 @@ namespace EmailReport.Controllers
             {
                 
                 int APJCount = 0;
-                int EURCount = 0;
+                
                 int AMSCount = 0;
+                int EMEACount = 0;
                 int UnGrouped = 0;
                 foreach (var it in dateRegionInfo)
                 {
@@ -170,10 +195,13 @@ namespace EmailReport.Controllers
                                 AMSCount++;
                                 break;
                             case "EUR":
-                                EURCount++;
+                                EMEACount++;
                                 break;
                             case "APJ":
                                 APJCount++;
+                                break;
+                            case "EMEA":
+                                EMEACount++;
                                 break;
                             case "":
                                 UnGrouped++;
@@ -182,8 +210,9 @@ namespace EmailReport.Controllers
                     }                  
                 }
                 item.AMSCount = AMSCount;
-                item.EURCount = EURCount;
+                
                 item.APJCount = APJCount;
+                item.EMEACount = EMEACount;
                 item.UnGrouped = UnGrouped;
                 finalDateCount.Add(item);
             }
@@ -235,7 +264,6 @@ namespace EmailReport.Controllers
             {
                 return View("Index", ReportListViewModel);
             }
-            ReportListViewModel.HasEmployeeData = true;
 
             // get the number of 
             var regionCode = from m in Reports
@@ -243,10 +271,10 @@ namespace EmailReport.Controllers
                              join code in employees on m.Email equals code.Email
                              group code by code.AreaCode into grp
                              select new { code = grp.Key, cnt = grp.Distinct().Count() };
-            
-            
+
+
             regionCodeCount = new List<RegionCodeCount>();
-            i = 0;
+            
             for (i = 0; i < 4; i++)
             {
                 RegionCodeCount region = new RegionCodeCount();
@@ -262,20 +290,26 @@ namespace EmailReport.Controllers
                         regionCodeCount.ElementAt(0).RegionCode = item.code;
                         regionCodeCount.ElementAt(0).Count = item.cnt;
                         break;
-                    case "EUR":
+                    case "EMEA":
                         regionCodeCount.ElementAt(1).RegionCode = item.code;
-                        regionCodeCount.ElementAt(1).Count = item.cnt;
+                        regionCodeCount.ElementAt(1).Count += item.cnt;
+                        break;
+                    case "EUR":
+                        //regionCodeCount.ElementAt(1).RegionCode = item.code;
+                        regionCodeCount.ElementAt(1).Count += item.cnt;
                         break;
                     case "APJ":
                         regionCodeCount.ElementAt(2).RegionCode = item.code;
                         regionCodeCount.ElementAt(2).Count = item.cnt;
                         break;
+                    
                 }
 
             }
 
             regionCodeCount.ElementAt(3).RegionCode = "Ungrouped";
             regionCodeCount.ElementAt(3).Count = upgroupedCount;
+
 
             ReportListViewModel.RegionCodeCount = regionCodeCount;
 
@@ -288,6 +322,7 @@ namespace EmailReport.Controllers
             List<CountryCount> america = new List<CountryCount>();
             List<CountryCount> asianPacific = new List<CountryCount>();
             List<CountryCount> europe = new List<CountryCount>();
+            List<CountryCount> EMEA = new List<CountryCount>();
             foreach (var country in countrySet)
             {
                 CountryCount cty = new CountryCount();
@@ -299,13 +334,17 @@ namespace EmailReport.Controllers
                         america.Add(cty);
                         break;
                     case "EUR":
-                        europe.Add(cty);
+                        EMEA.Add(cty);
                         break;
                     case "APJ":
                         asianPacific.Add(cty);
                         break;
+                    case "EMEA":
+                        EMEA.Add(cty);
+                        break;
                 }
             }
+
             var orderedAmerica = from m in america
                                  orderby m.Count descending
                                  select m;
@@ -315,9 +354,14 @@ namespace EmailReport.Controllers
             var orderedAsianPacfic = from m in asianPacific
                                      orderby m.Count descending
                                      select m;
+            var orderedEMEA = from m in EMEA
+                              orderby m.Count descending
+                              select m;
             ReportListViewModel.America = orderedAmerica.ToList();
             ReportListViewModel.Europe = orderedEurope.ToList();
             ReportListViewModel.AsianPacific = orderedAsianPacfic.ToList();
+            ReportListViewModel.EMEA = orderedEMEA.ToList();
+
 
             foreach (LogRecord emp in Reports)
             {
@@ -327,7 +371,23 @@ namespace EmailReport.Controllers
                 reportViewModels.Add(reportViewModel);
             }
             ReportListViewModel.Records = reportViewModels;
+            JavaScriptSerializer jss = new JavaScriptSerializer();
 
+            List<CountryCount> Map = new List<CountryCount>();
+            Map.AddRange(america);
+            Map.AddRange(asianPacific);
+            Map.AddRange(EMEA);
+            string output = jss.Serialize(Map);
+            output = output.Replace("\"Korea, Republic of\"", "North Korea").Replace("\"Country\"", "name").Replace("\"Count\"", "value").Replace("\"", "\'");
+            ReportListViewModel.json = output;
+            //System.Diagnostics.Debug.WriteLine(output);
+
+            //
+
+            string GraphLine = jss.Serialize(ReportListViewModel.DateCount);
+            GraphLine = GraphLine.Replace("\"Date\"", "Date").Replace("\"APJCount\"", "APJ").Replace("\"AMSCount\"", "AMS").Replace("\"EURCount\"", "EUR").Replace("\"EMEACount\"", "EMEA").Replace("\"", "\'");
+            ReportListViewModel.GraphLine = GraphLine;
+            System.Diagnostics.Debug.WriteLine(GraphLine);
             return View("Index", ReportListViewModel);
 
         }
@@ -335,13 +395,25 @@ namespace EmailReport.Controllers
         public ActionResult Details(string id)
         {
             
+
+
             ReportListDetailsViewModel reportListDetailsViewModel = new ReportListDetailsViewModel();
             ReportBusinessLayer empBal = new ReportBusinessLayer();
             List<LogRecord> recordsords = empBal.GetRecords();
+            reportListDetailsViewModel.Start = DateTime.Parse(GlobalVariables.Start).ToString("d");
+            reportListDetailsViewModel.End = DateTime.Parse(GlobalVariables.End).ToString("d");
 
             List<ReportDetailsViewModel> reportViewModels = new List<ReportDetailsViewModel>();
             List<Employee> employees = new List<Employee>();
             employees = empBal.GetEmployees();
+            employees = employees.Where(a => GlobalVariables.L1List.Contains(a.L1)).ToList();
+            employees = employees.Where(a => GlobalVariables.L2List.Contains(a.L2)).ToList();
+            employees = employees.Where(a => GlobalVariables.L3List.Contains(a.L3)).ToList();
+            employees = employees.Where(a => GlobalVariables.L4List.Contains(a.L4)).ToList();
+            employees = employees.Where(a => GlobalVariables.L5List.Contains(a.L5)).ToList();
+            employees = employees.Where(a => GlobalVariables.RegionList.Contains(a.AreaCode)).ToList();
+            employees = employees.Where(a => GlobalVariables.CountryList.Contains(a.Country)).ToList();
+            employees = employees.Where(a => GlobalVariables.StatusList.Contains(a.Status)).ToList();
 
             reportListDetailsViewModel.TotalCount = recordsords.Count();
             var em = from m in recordsords
@@ -352,7 +424,7 @@ namespace EmailReport.Controllers
             var empDetail = from m in em
                             join empl in employees on m equals empl.Email
                             group empl by empl.Email into grp
-                            select new { Email = grp.Key, Cnt = grp.Count(), Code = grp.First().AreaCode, Country = grp.First().Country};
+                            select new { Email = grp.Key, Cnt = grp.Count(), Code = grp.First().AreaCode, Cty = grp.First().Country};
 
             reportListDetailsViewModel.CurCount = em.Distinct().Count();
             foreach (var detail in empDetail)
@@ -360,7 +432,7 @@ namespace EmailReport.Controllers
                 ReportDetailsViewModel reportViewModel = new ReportDetailsViewModel();
                 //reportViewModel.Id = detail.Id;
                 reportViewModel.Email = detail.Email;
-                reportViewModel.Country = detail.Country;
+                reportViewModel.Country = detail.Cty;
                 reportViewModel.AreaCode = detail.Code;
                 reportViewModel.Count = detail.Cnt;
 
@@ -378,6 +450,15 @@ namespace EmailReport.Controllers
             reportListDetailsViewModel.RegionList = GlobalVariables.Base.RegionList;
             reportListDetailsViewModel.StatusList = GlobalVariables.Base.StatusList;
 
+            reportListDetailsViewModel.SelectedL1List = GlobalVariables.L1List;
+            reportListDetailsViewModel.SelectedL2List = GlobalVariables.L2List;
+            reportListDetailsViewModel.SelectedL3List = GlobalVariables.L3List;
+            reportListDetailsViewModel.SelectedL4List = GlobalVariables.L4List;
+            reportListDetailsViewModel.SelectedL5List = GlobalVariables.L5List;
+            reportListDetailsViewModel.SelectedCountryList = GlobalVariables.CountryList;
+            reportListDetailsViewModel.SelectedRegionList = GlobalVariables.RegionList;
+            reportListDetailsViewModel.SelectedStatusList = GlobalVariables.StatusList;
+
             return View("Details", reportListDetailsViewModel);
         }
 
@@ -385,35 +466,198 @@ namespace EmailReport.Controllers
 
         public ActionResult DateRange()
         {
-            string Start = DateTime.Parse(Request.Form["StartDate"]).ToString("o").Substring(0, 10);
-            string End = DateTime.Parse(Request.Form["EndDate"]).ToString("o").Substring(0, 10);
-
-            string L1 = Request.Form["L1"];
-            if (!L1.Equals(""))
+            if (Request.Form["StartDate"].Length != 0)
             {
-                string[] L1Values = Regex.Split(L1, "(?<=^[^\"]*(?:\"[^\"]*\"[^\"]*)*),(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                GlobalVariables.Start = DateTime.Parse(Request.Form["StartDate"]).ToString("o").Substring(0, 10);
             }
-            
+            if (Request.Form["EndDate"].Length != 0)
+            {
+                GlobalVariables.End = DateTime.Parse(Request.Form["EndDate"]).ToString("o").Substring(0, 10);
+            }
+            //string queryDate = "";
+            //if (!Start.Equals(""))
+            //{
+            //    queryDate = Start + ".CompareTo(DateTime.Parse(m.DateInclude).ToString(\"o\").Substring(0, 10)) <= 0 &&" + End +
+            //    ".CompareTo(DateTime.Parse(m.DateInclude).ToString(\"o\").Substring(0, 10)) >= 0)";
+            //}
 
-            System.Diagnostics.Debug.WriteLine(L1);
+            
             ReportListViewModel ReportListViewModel = new ReportListViewModel();
             ReportBusinessLayer empBal = new ReportBusinessLayer();
             List<LogRecord> AllRecords = empBal.GetRecords();
-            GlobalVariables.Start = Start;
-            GlobalVariables.End = End;
-            
+            string Start = GlobalVariables.Start;
+            string End = GlobalVariables.End;
+
             var Reports = from m in AllRecords
 
                           where (Start.CompareTo(DateTime.Parse(m.DateInclude).ToString("o").Substring(0, 10)) <= 0 && End.CompareTo(DateTime.Parse(m.DateInclude).ToString("o").Substring(0, 10)) >= 0)
                           select m;
-            System.Diagnostics.Debug.WriteLine(Reports.Count() + "count is");
+            ReportListViewModel.Start = DateTime.Parse(Start).ToString("d");
+            ReportListViewModel.End = DateTime.Parse(End).ToString("d");
+
+            //System.Diagnostics.Debug.WriteLine(Reports.Count() + "count is");
             List<ReportViewModel> repViewModels = new List<ReportViewModel>();
 
             List<ReportViewModel> reportViewModels = new List<ReportViewModel>();
 
             List<Employee> employees = new List<Employee>();
             employees = empBal.GetEmployees();
+            System.Diagnostics.Debug.WriteLine("number of all employee " + Request.Form["L1"]);
 
+            if (Request.Form.AllKeys.Contains("L1"))
+            {
+                string L1 = Request.Form["L1"];
+                if (!L1.Equals(""))
+                {
+                    string[] L1Values = Regex.Split(L1, "(?<=^[^\"]*(?:\"[^\"]*\"[^\"]*)*),(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                    List<string> L1List = L1Values.OfType<string>().ToList();
+                    employees = employees.Where(a => L1List.Contains(a.L1)).ToList();
+
+                    GlobalVariables.L1List = L1List;
+                    ReportListViewModel.SelectedL1List = L1List;
+                }
+            } else
+            {
+                GlobalVariables.L1List = GlobalVariables.Base.L1List;
+                ReportListViewModel.SelectedL1List = GlobalVariables.Base.L1List;
+            }
+
+            if (Request.Form.AllKeys.Contains("L2"))
+            {
+                string L2 = Request.Form["L2"];
+                if (!L2.Equals(""))
+                {
+                    string[] L2Values = Regex.Split(L2, "(?<=^[^\"]*(?:\"[^\"]*\"[^\"]*)*),(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                    List<string> L2List = L2Values.OfType<string>().ToList();
+                    employees = employees.Where(a => L2List.Contains(a.L2)).ToList();
+
+                    GlobalVariables.L2List = L2List;
+                    ReportListViewModel.SelectedL2List = L2List;
+                }
+            }
+            else
+            {
+                GlobalVariables.L2List = GlobalVariables.Base.L2List;
+                ReportListViewModel.SelectedL2List = GlobalVariables.Base.L2List;
+            }
+
+            if (Request.Form.AllKeys.Contains("L3"))
+            {
+                string L3 = Request.Form["L3"];
+                if (!L3.Equals(""))
+                {
+                    string[] L3Values = Regex.Split(L3, "(?<=^[^\"]*(?:\"[^\"]*\"[^\"]*)*),(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                    List<string> L3List = L3Values.OfType<string>().ToList();
+                    employees = employees.Where(a => L3List.Contains(a.L3)).ToList();
+
+                    GlobalVariables.L3List = L3List;
+                    ReportListViewModel.SelectedL3List = L3List;
+                }
+            }
+            else
+            {
+                GlobalVariables.L3List = GlobalVariables.Base.L3List;
+                ReportListViewModel.SelectedL3List = GlobalVariables.Base.L3List;
+            }
+
+            if (Request.Form.AllKeys.Contains("L4"))
+            {
+                string L4 = Request.Form["L4"];
+                if (!L4.Equals(""))
+                {
+                    string[] L4Values = Regex.Split(L4, "(?<=^[^\"]*(?:\"[^\"]*\"[^\"]*)*),(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                    List<string> L4List = L4Values.OfType<string>().ToList();
+                    employees = employees.Where(a => L4List.Contains(a.L4)).ToList();
+
+                    GlobalVariables.L4List = L4List;
+                    ReportListViewModel.SelectedL4List = L4List;
+                }
+            }
+            else
+            {
+                GlobalVariables.L4List = GlobalVariables.Base.L4List;
+                ReportListViewModel.SelectedL4List = GlobalVariables.Base.L4List;
+            }
+
+            if (Request.Form.AllKeys.Contains("L5"))
+            {
+                string L5 = Request.Form["L5"];
+                if (!L5.Equals(""))
+                {
+                    string[] L5Values = Regex.Split(L5, "(?<=^[^\"]*(?:\"[^\"]*\"[^\"]*)*),(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                    List<string> L5List = L5Values.OfType<string>().ToList();
+                    employees = employees.Where(a => L5List.Contains(a.L5)).ToList();
+
+                    GlobalVariables.L5List = L5List;
+                    ReportListViewModel.SelectedL5List = L5List;
+                }
+            }
+            else
+            {
+                GlobalVariables.L5List = GlobalVariables.Base.L5List;
+                ReportListViewModel.SelectedL5List = GlobalVariables.Base.L5List;
+            }
+
+            if (Request.Form.AllKeys.Contains("Region"))
+            {
+                string Region = Request.Form["Region"];
+                if (!Region.Equals(""))
+                {
+                    string[] RegionValues = Regex.Split(Region, "(?<=^[^\"]*(?:\"[^\"]*\"[^\"]*)*),(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                    List<string> RegionList = RegionValues.OfType<string>().ToList();
+                    employees = employees.Where(a => RegionList.Contains(a.AreaCode)).ToList();
+
+                    GlobalVariables.RegionList = RegionList;
+                    ReportListViewModel.SelectedRegionList = RegionList;
+                }
+            }
+            else
+            {
+                GlobalVariables.RegionList = GlobalVariables.Base.RegionList;
+                ReportListViewModel.SelectedRegionList = GlobalVariables.Base.RegionList;
+            }
+
+            if (Request.Form.AllKeys.Contains("Country"))
+            {
+                string Country = Request.Form["Country"];
+                if (!Country.Equals(""))
+                {
+                    string[] CountryValues = Regex.Split(Country, "(?<=^[^\"]*(?:\"[^\"]*\"[^\"]*)*),(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                    List<string> CountryList = CountryValues.OfType<string>().ToList();
+                    employees = employees.Where(a => CountryList.Contains(a.Country)).ToList();
+
+                    GlobalVariables.CountryList = CountryList;
+                    ReportListViewModel.SelectedCountryList = CountryList;
+                }
+            }
+            else
+            {
+                GlobalVariables.CountryList = GlobalVariables.Base.CountryList;
+                ReportListViewModel.SelectedCountryList = GlobalVariables.Base.CountryList;
+            }
+
+            if (Request.Form.AllKeys.Contains("Status"))
+            {
+                string Status = Request.Form["Status"];
+                if (!Status.Equals(""))
+                {
+                    string[] StatusValues = Regex.Split(Status, "(?<=^[^\"]*(?:\"[^\"]*\"[^\"]*)*),(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                    List<string> StatusList = StatusValues.OfType<string>().ToList();
+                    employees = employees.Where(a => StatusList.Contains(a.Status)).ToList();
+
+                    GlobalVariables.StatusList = StatusList;
+                    ReportListViewModel.SelectedStatusList = StatusList;
+                }
+            }
+            else
+            {
+                GlobalVariables.StatusList = GlobalVariables.Base.StatusList;
+                ReportListViewModel.SelectedStatusList = GlobalVariables.Base.StatusList;
+            }
+
+            Reports = from m in Reports
+                      join e in employees on m.Email equals e.Email
+                      select m;
 
             var email = from m in Reports
                         select m.Email;
@@ -426,6 +670,8 @@ namespace EmailReport.Controllers
                            orderby DateTime.Parse(m.DateInclude).Year.ToString() + "-" + DateTime.Parse(m.DateInclude).Month.ToString() + "-" + DateTime.Parse(m.DateInclude).Day.ToString()
                            group m by DateTime.Parse(m.DateInclude).Year.ToString() + "-" + DateTime.Parse(m.DateInclude).Month.ToString() + "-" + DateTime.Parse(m.DateInclude).Day.ToString() into grp
                            select new { key = grp.Key, cnt = grp.Count() };
+
+           
             List<DateCount> dateCount = new List<DateCount>();
             foreach (var item in dateInfo)
             {
@@ -445,9 +691,11 @@ namespace EmailReport.Controllers
 
             foreach (var item in dateCount)
             {
+
                 int APJCount = 0;
                 int EURCount = 0;
                 int AMSCount = 0;
+                int EMEACount = 0;
                 int UnGrouped = 0;
                 foreach (var it in dateRegionInfo)
                 {
@@ -460,26 +708,27 @@ namespace EmailReport.Controllers
                                 AMSCount++;
                                 break;
                             case "EUR":
-                                EURCount++;
+                                EMEACount++;
                                 break;
                             case "APJ":
                                 APJCount++;
+                                break;
+                            case "EMEA":
+                                EMEACount++;
                                 break;
                             case "":
                                 UnGrouped++;
                                 break;
                         }
-
                     }
-
                 }
                 item.AMSCount = AMSCount;
                 item.EURCount = EURCount;
                 item.APJCount = APJCount;
+                item.EMEACount = EMEACount;
                 item.UnGrouped = UnGrouped;
                 finalDateCount.Add(item);
             }
-
             ReportListViewModel.DateCount = finalDateCount;
 
 
@@ -553,6 +802,10 @@ namespace EmailReport.Controllers
                         regionCodeCount.ElementAt(2).RegionCode = item.code;
                         regionCodeCount.ElementAt(2).Count = item.cnt;
                         break;
+                    case "EMEA":
+                        regionCodeCount.ElementAt(1).RegionCode = item.code;
+                        regionCodeCount.ElementAt(1).Count = item.cnt;
+                        break;
                 }
                
             }
@@ -572,6 +825,7 @@ namespace EmailReport.Controllers
             List<CountryCount> america = new List<CountryCount>();
             List<CountryCount> asianPacific = new List<CountryCount>();
             List<CountryCount> europe = new List<CountryCount>();
+            List<CountryCount> EMEA = new List<CountryCount>();
             foreach (var country in countrySet)
             {
                 CountryCount cty = new CountryCount();
@@ -583,26 +837,33 @@ namespace EmailReport.Controllers
                         america.Add(cty);
                         break;
                     case "EUR":
-                        europe.Add(cty);
+                        EMEA.Add(cty);
                         break;
                     case "APJ":
                         asianPacific.Add(cty);
+                        break;
+                    case "EMEA":
+                        EMEA.Add(cty);
                         break;
                 }
             }
 
             var orderedAmerica = from m in america
-                                 orderby m.Count
+                                 orderby m.Count descending
                                  select m;
             var orderedEurope = from m in europe
-                                orderby m.Count
+                                orderby m.Count descending
                                 select m;
             var orderedAsianPacfic = from m in asianPacific
-                                orderby m.Count
+                                orderby m.Count descending
                                 select m;
+            var orderedEMEA = from m in EMEA
+                                     orderby m.Count descending
+                                     select m;
             ReportListViewModel.America = orderedAmerica.ToList();
             ReportListViewModel.Europe = orderedEurope.ToList();
             ReportListViewModel.AsianPacific = orderedAsianPacfic.ToList();
+            ReportListViewModel.EMEA = orderedEMEA.ToList();
 
             foreach (LogRecord emp in Reports)
             {
@@ -612,6 +873,21 @@ namespace EmailReport.Controllers
                 reportViewModels.Add(reportViewModel);
             }
             ReportListViewModel.Records = reportViewModels;
+
+            JavaScriptSerializer jss = new JavaScriptSerializer();
+            List<CountryCount> Map = new List<CountryCount>();
+            Map.AddRange(america);
+            Map.AddRange(asianPacific);
+            Map.AddRange(europe);
+            Map.AddRange(EMEA);
+            string output = jss.Serialize(Map);
+            output = output.Replace("\"Korea, Republic of\"", "North Korea").Replace("\"Country\"", "name").Replace("\"Count\"", "value").Replace("\"", "\'");
+            ReportListViewModel.json = output;
+            //System.Diagnostics.Debug.WriteLine(output);
+
+            string GraphLine = jss.Serialize(ReportListViewModel.DateCount);
+            GraphLine = GraphLine.Replace("\"Date\"", "Date").Replace("\"APJCount\"", "APJ").Replace("\"AMSCount\"", "AMS").Replace("\"EURCount\"", "EUR").Replace("\"EMEACount\"", "EMEA").Replace("\"", "\'");
+            ReportListViewModel.GraphLine = GraphLine;
 
             ReportListViewModel.L1List = GlobalVariables.Base.L1List;
             ReportListViewModel.L2List = GlobalVariables.Base.L2List;

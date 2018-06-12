@@ -12,6 +12,7 @@ namespace EmailReport.Models
         public int APJCount { get; set; }
         public int EURCount { get; set; }
         public int AMSCount { get; set; }
+        public int EMEACount { get; set; } 
         public int UnGrouped { get; set; }
     }
 }

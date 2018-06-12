@@ -20,6 +20,8 @@
     <link href="~/UI/build/css/custom.min.css" rel="stylesheet">
     <link href="~/UI/build/css/custom.min.css" rel="stylesheet">
     <script src="~/UI/build/js/custom.min.js"></script>
+    <script src="~/UI/vendors/raphael/raphael.min.js"></script>
+    <script src="~/UI/vendors/morris.js/morris.min.js"></script>
     <style>
         .canvasbar {
             width: 400px;
@@ -270,7 +272,28 @@
                 fontFamily: 'Arial, Verdana, sans-serif'
             }
         };
+        var count = [];
 
+        function graph_line() {
+            if ($('#date_graph_line').length) {
+                console.log('graph line');
+                Morris.Line({
+                    element: 'graph_line',
+                    xkey: 'Date',
+                    ykeys: ['AMS', 'EUR', 'APJ', 'EMEA'],
+                    labels: ['Count'],
+                    hideHover: 'auto',
+                    lineColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
+                    data:@Html.Raw(@Model.GraphLine),
+                    resize: true
+                });
+
+                $MENU_TOGGLE.on('click', function () {
+                    $(window).resize();
+                });
+
+            }
+        }
         function echart_world_map() {
             if ($('#echart_world_map').length) {
 
@@ -279,16 +302,16 @@
 
                 echartMap.setOption({
                     title: {
-                        text: 'World Population (2010)',
-                        subtext: 'from United Nations, Total population, both sexes combined, as of 1 July (thousands)',
+                        text: 'Number of Employees',
+                        subtext: '',
                         x: 'center',
                         y: 'top'
                     },
                     tooltip: {
                         trigger: 'item',
                         formatter: function (params) {
-                            var value = (params.value + '').split('.');
-                            value = value[0].replace(/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, '$1,') + '.' + value[1];
+                            var value = params.value;
+
                             return params.seriesName + '<br/>' + params.name + ' : ' + value;
                         }
                     },
@@ -323,14 +346,14 @@
                     },
                     dataRange: {
                         min: 0,
-                        max: 1000000,
+                        max: 3000,
                         text: ['High', 'Low'],
                         realtime: false,
                         calculable: true,
                         color: ['#087E65', '#26B99A', '#CBEAE3']
                     },
                     series: [{
-                        name: 'World Population (2010)',
+                        name: 'Number of Employees',
                         type: 'map',
                         mapType: 'world',
                         roam: false,
@@ -344,13 +367,7 @@
                                 }
                             }
                         },
-                        data: [{
-                            name: 'Afghanistan',
-                            value: 28397.812
-                        }, {
-                            name: 'Angola',
-                            value: 19549.124
-                        }]
+                        data: @Html.Raw(@Model.json)
                     }]
                 });
 
@@ -367,9 +384,14 @@
             if ($('.canvasbar').length) {
 
                 var chart_bar_settings = {
+                    
                     type: 'bar',
-                    tooltipFillColor: "rgba(51, 51, 51, 0.55)",
+                    
+                    axisY: {
+                        includeZero: true  //try changing it to true
+                    },
                     data: {
+                        
                         labels: [
                             "Delieverred",
                             "Open",
@@ -393,6 +415,7 @@
                     options: {
                         legend: false,
                         responsive: false
+                        
                     }
                 }
 
@@ -422,9 +445,10 @@
                     data: {
                         labels: [
                             "AMS",
-                            "EUR",
+                            "EMEA",
                             "APJ",
-                            "UNGROUPED",
+                            
+                            "N/A",
                         ],
                         datasets: [{
                             data: [@Model.RegionCodeCount.ElementAt(0).Count, @Model.RegionCodeCount.ElementAt(1).Count, @Model.RegionCodeCount.ElementAt(2).Count, @Model.RegionCodeCount.ElementAt(3).Count],
@@ -433,12 +457,14 @@
                                 "#9B59B6",
                                 "#E74C3C",
                                 "#26B99A"
+                                
                             ],
                             hoverBackgroundColor: [
                                 "#CFD4D8",
                                 "#B370CF",
                                 "#E95E4F",
                                 "#36CAAB"
+                                
                             ]
                         }]
                     },
@@ -462,6 +488,7 @@
            init_chart_pie();
             init_chart_bar();
             echart_world_map();
+            //graph_line();
         })
     </script>
 
@@ -470,31 +497,7 @@
 @section ContentBody{
     <div class="right_col" role="main">
 
-        @*<div class="inline" style="display:inline">
-
-                <form action="/Report/DateRange" method="post" class="form-group align-self-end ;">
-
-                    <label for="StartDate" class="form-inline" style="font-size:large; vertical-align: top"> From : <input id="StartDate" name="StartDate" width="200" style="vertical-align: bottom" required /></label>
-                    <script>
-                        $('#StartDate').datepicker({
-
-                            uiLibrary: 'bootstrap'
-                        });
-                    </script>
-
-                    <label for="EndDate" class="form-inline" style="font-size:large; vertical-align: top">  To : <input id="EndDate" name="EndDate" style="vertical-align: middle" width="200" required /></label>
-                    <script>
-                        $('#EndDate').datepicker({
-                            uiLibrary: 'bootstrap'
-                        });
-                    </script>
-
-                    <input type="submit" name="BtnSubmit" class="btn btn-primary" style="vertical-align: top" value="Submit" />
-                    <a href="/BulkUpload/Index" style="font-size:large" class="btn btn-default pull-right">Upload</a>
-                </form>
-
-
-            </div>*@
+       
 
         <div class="main_container nav-md container body">
             <div class="row" style="float:left">
@@ -581,7 +584,7 @@
 
                                             <tr style="font-size:x-large">
                                                 <td>
-                                                    <p style="font-size:x-large"><i class="fa fa-square purple" style="font-size:x-large"></i>EUR </p>
+                                                    <p style="font-size:x-large"><i class="fa fa-square purple" style="font-size:x-large"></i>EMEA </p>
                                                 </td>
                                                 <td style="font-size:x-large">@Model.RegionCodeCount.ElementAt(1).Count</td>
                                             </tr>
@@ -593,10 +596,11 @@
                                             </tr>
                                             <tr style="font-size:x-large">
                                                 <td>
-                                                    <p style="font-size:x-large"><i class="fa fa-square green" style="font-size:x-large"></i>Ungrouped </p>
+                                                    <p style="font-size:x-large"><i class="fa fa-square green" style="font-size:x-large"></i>N/A </p>
                                                 </td>
                                                 <td style="font-size:x-large">@Model.RegionCodeCount.ElementAt(3).Count</td>
                                             </tr>
+                                            
                                         </table>
                                     </td>
 
@@ -614,6 +618,39 @@
         <div class="page-title">
             <div class="title_left">
                 <h2>Details of the Opens</h2>
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>World Map</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="#">Settings 1</a>
+                                </li>
+                                <li>
+                                    <a href="#">Settings 2</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+
+                    <div id="echart_world_map" style="height:480px;"></div>
+
+                </div>
+
             </div>
         </div>
 
@@ -644,12 +681,12 @@
                     <table class="table table-striped jambo_table">
                         <thead>
                             <tr class="headings">
-                                <th>EUR (@Model.RegionCodeCount.ElementAt(1).Count Unique Users)</th>
+                                <th>EMEA (@Model.RegionCodeCount.ElementAt(1).Count Unique Users)</th>
                                 <th>Open Count</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var kvp in @Model.Europe)
+                            @foreach (var kvp in @Model.EMEA)
                             {
                                 <tr>
                                     <td>@kvp.Country</td>
@@ -682,6 +719,7 @@
                     @*</div>*@
                     @*</div>*@
                 </td>
+                
         </table>
 
 
@@ -711,8 +749,65 @@
                     }
                 </tbody>
             </table>
-        </div>
 
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel tile fixed_height_320 overflow_hidden" style="height:500px">
+                <div class="x_title">
+                    <h2>Daily Open</h2>
+
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <table class="" style="width:100%">
+                        <tr>
+                            <td>
+                                <div id="date_graph_line" style="width:80%; height:300px;"></div>
+
+                                <script>
+                                        if ($('#date_graph_line').length) {
+                                        console.log('graph line');
+                                        var chart = Morris.Line({
+                                            element: 'date_graph_line',
+                                            xkey: 'Date',
+                                            hideHover: false,
+                                            ykeys: ['AMS', 'EMEA', 'APJ'],
+                                            labels: ['AMS', 'EMEA', 'APJ'],
+                                            hideHover: 'auto',
+                                            lineColors: ['#26B99A', "#E74C3C", '#ACADAC'],
+                                            xLabels: "day",
+                                            data:@Html.Raw(@Model.GraphLine),
+                                            resize: true
+                                        });
+
+                                                    chart.options.labels.forEach(function (label, i) {
+                                                        var legendItem = $('<span></span>').text(label).css('color', chart.options.lineColors[i])
+                                                        $('#legend').append(legendItem)
+                                                    });
+
+                                    }
+                                </script>
+
+                            </td>
+
+
+
+
+
+                            <td>
+
+                                <p style="font-size:initial"><i class="fa fa-square green" style="font-size:initial"></i>&nbsp;AMS </p>
+
+                                <p style="font-size:initial"><i class="fa fa-square red" style="font-size:initial"></i>&nbsp;EMEA </p>
+
+                                <p style="font-size:initial"><i class="fa fa-square blue" style="font-size:initial"></i>&nbsp;APJ </p>
+
+                                
+                            </td>
+                    </table>
+                </div>
+            </div>
+        </div>
         <div>
             <table class="table table-striped jambo_table">
                 <thead>
@@ -723,7 +818,8 @@
                         <th>AMSOpen</th>
                         <th>EUROpen</th>
                         <th>APJOpen</th>
-                        <th>UnGrouped</th>
+                        <th>EMEAJOpen</th>
+                        <th>N/A</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -735,16 +831,18 @@
                             <td>@kvp.AMSCount</td>
                             <td>@kvp.EURCount</td>
                             <td>@kvp.APJCount</td>
+                            <td>@kvp.EMEACount</td>
                             <td>@kvp.UnGrouped</td>
                         </tr>
                     }
                 </tbody>
             </table>
         </div>
-        <div class="col-md-8 col-sm-8 col-xs-12">
+
+        @*<div class="col-md-6 col-sm-6 col-xs-12">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>World Map</h2>
+                    <h2>Line Graph <small>Sessions</small></h2>
                     <ul class="nav navbar-right panel_toolbox">
                         <li>
                             <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -766,15 +864,39 @@
                     </ul>
                     <div class="clearfix"></div>
                 </div>
-                <div class="x_content">
+                <div class="x_content2">
+                    <div id="date_graph_line" style="width:100%; height:300px;"></div>
 
-                    <div id="echart_world_map" style="height:370px;"></div>
+                    <script>
+                        if ($('#date_graph_line').length) {
+                console.log('graph line');
+                var chart = Morris.Line({
+                    element: 'date_graph_line',
+                    xkey: 'Date',
+                    hideHover: false,
+                    ykeys: ['AMS', 'EUR', 'APJ', 'EMEA'],
+                    labels: ['AMS', 'EUR', 'APJ', 'EMEA'],
+                    hideHover: 'auto',
+                    lineColors: ['#26B99A', '#34495E', '#ACADAC', '#3498DB'],
+                    xLabels: "day",
+                    data:@Html.Raw(@Model.GraphLine),
+                    resize: true
+                });
 
+                            chart.options.labels.forEach(function (label, i) {
+                                var legendItem = $('<span></span>').text(label).css('color', chart.options.lineColors[i])
+                                $('#legend').append(legendItem)
+                            });
+
+            }
+                    </script>
                 </div>
             </div>
-        </div>
+        </div>*@
+
 
     </div>
+    
 }
 
 
