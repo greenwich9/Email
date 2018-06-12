@@ -19,6 +19,8 @@ namespace EmailReport.Controllers
         {
             FileUploadViewModel fileUpload = new FileUploadViewModel();
 
+            fileUpload.Start = DateTime.Parse(GlobalVariables.Start).ToString("d");
+            fileUpload.End = DateTime.Parse(GlobalVariables.End).ToString("d");
             fileUpload.L1List = GlobalVariables.Base.L1List;
             fileUpload.L2List = GlobalVariables.Base.L2List;
             fileUpload.L3List = GlobalVariables.Base.L3List;

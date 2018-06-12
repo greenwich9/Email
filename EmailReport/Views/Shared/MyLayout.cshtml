@@ -60,7 +60,7 @@
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
-                        <a href="/Report/index" class="site_title"><i class="fa fa-bar-chart"></i> <span>Overview</span></a>
+                        <a href="/Report/index" class="site_title"><i class="fa fa-bar-chart"></i> <span> Overview</span></a>
                     </div>
                     <br />
                     <br />
@@ -73,7 +73,7 @@
                             <form action="/Report/DateRange" method="post" class="form-group align-self-end ;">
                                 <ul class="nav side-menu">
                                     <li>
-                                        <label for="StartDate" class="form-inline" style="font-size:large; vertical-align: top"> From : <input id="StartDate" name="StartDate" width="200" style="vertical-align: bottom" value="@Model.Start"/></label>
+                                        <label for="StartDate" class="form-inline" style="font-size:large; vertical-align: top"> From : <input id="StartDate" name="StartDate" width="200" style="vertical-align: bottom" value="@Model.Start" /></label>
                                         <script>
                                             $('#StartDate').datepicker({
 
@@ -92,17 +92,20 @@
 
                                     </li>
                                     <li>
-                                        <h5>L1</h5>
+                                        @*<h5>L1</h5>*@
                                         <select multiple="multiple" style="width:85%; margin:0, auto" name="L1">
                                             @foreach (var l1 in @Model.L1List)
                                             {
-                                                if (Model.SelectedL1List.Count() != Model.L1List.Count() && Model.SelectedL1List.Contains(l1)) { 
-                                            <option value='@l1' selected> &nbsp;@l1</option>
-                                                } else {
+                                                if (Model.SelectedL1List.Count() != Model.L1List.Count() && Model.SelectedL1List.Contains(l1))
+                                                {
+                                                    <option value='@l1' selected> &nbsp;@l1</option>
+                                                }
+                                                else
+                                                {
                                                     <option value='@l1'> &nbsp;@l1</option>
                                                 }
                                             }
-                                            
+
                                         </select>
                                         <script src="~/Scripts/multiple-select.js"></script>
                                         <script>
@@ -112,20 +115,20 @@
                                         </script>
                                     </li>
                                     <li>
-                                        <h5>L2</h5>
+                                        @*<h5>L2</h5>*@
                                         <select multiple="multiple" style="width:85%; margin:0, auto" name="L2">
                                             @foreach (var l2 in @Model.L2List)
                                             {
                                                 if (Model.SelectedL2List.Count() != Model.L2List.Count() && Model.SelectedL2List.Contains(l2))
                                                 {
-                                            <option value='@l2' selected> &nbsp;@l2</option>
+                                                    <option value='@l2' selected> &nbsp;@l2</option>
                                                 }
                                                 else
                                                 {
                                                     <option value='@l2'> &nbsp;@l2</option>
                                                 }
                                             }
-                                            
+
                                         </select>
                                         <script src="~/Scripts/multiple-select.js"></script>
                                         <script>
@@ -135,20 +138,20 @@
                                         </script>
                                     </li>
                                     <li>
-                                        <h5>L3</h5>
+                                        @*<h5>L3</h5>*@
                                         <select multiple="multiple" style="width:85%; margin:0, auto" name="L3">
                                             @foreach (var l3 in @Model.L3List)
                                             {
                                                 if (Model.SelectedL3List.Count() != Model.L3List.Count() && Model.SelectedL3List.Contains(l3))
                                                 {
-                                            <option value='@l3' selected> &nbsp;@l3</option>
+                                                    <option value='@l3' selected> &nbsp;@l3</option>
                                                 }
                                                 else
                                                 {
                                                     <option value='@l3'> &nbsp;@l3</option>
                                                 }
                                             }
-                                            
+
                                         </select>
                                         <script src="~/Scripts/multiple-select.js"></script>
                                         <script>
@@ -158,20 +161,20 @@
                                         </script>
                                     </li>
                                     <li>
-                                        <h5>L4</h5>
+                                        @*<h5>L4</h5>*@
                                         <select multiple="multiple" style="width:85%; margin:0, auto" name="L4">
                                             @foreach (var l4 in @Model.L4List)
                                             {
                                                 if (Model.SelectedL4List.Count() != Model.L4List.Count() && Model.SelectedL4List.Contains(l4))
                                                 {
-                                            <option value='@l4' selected> &nbsp;@l4</option>
+                                                    <option value='@l4' selected> &nbsp;@l4</option>
                                                 }
                                                 else
                                                 {
                                                     <option value='@l4'> &nbsp;@l4</option>
                                                 }
                                             }
-                                            
+
                                         </select>
                                         <script src="~/Scripts/multiple-select.js"></script>
                                         <script>
@@ -181,20 +184,20 @@
                                         </script>
                                     </li>
                                     <li>
-                                        <h5>L5</h5>
+                                        @*<h5>L5</h5>*@
                                         <select multiple="multiple" style="width:85%; margin:0, auto" name="L5">
                                             @foreach (var l5 in @Model.L5List)
                                             {
                                                 if (Model.SelectedL5List.Count() != Model.L5List.Count() && Model.SelectedL5List.Contains(l5))
                                                 {
-                                            <option value='@l5' selected> &nbsp;@l5</option>
+                                                    <option value='@l5' selected> &nbsp;@l5</option>
                                                 }
                                                 else
                                                 {
-                                            <option value='@l5'> &nbsp;@l5</option>
+                                                    <option value='@l5'> &nbsp;@l5</option>
                                                 }
                                             }
-                                            
+
                                         </select>
                                         <script src="~/Scripts/multiple-select.js"></script>
                                         <script>
@@ -204,14 +207,14 @@
                                         </script>
                                     </li>
                                     <li>
-                                        <h5>Region</h5>
+                                        @*<h5>Region</h5>*@
                                         <select multiple="multiple" style="width:85%; margin:0, auto" name="Region">
-                                            
+
                                             @foreach (var re in @Model.RegionList)
                                             {
                                                 if (Model.RegionList.Count() != Model.SelectedRegionList.Count() && Model.SelectedRegionList.Contains(re))
                                                 {
-                                            <option value='@re' selected> &nbsp;@re</option>
+                                                    <option value='@re' selected> &nbsp;@re</option>
                                                 }
                                                 else
                                                 {
@@ -228,17 +231,17 @@
                                         </script>
                                     </li>
                                     <li>
-                                        <h5>Country</h5>
+                                        @*<h5>Country</h5>*@
                                         <select multiple="multiple" style="width:85%; margin:0, auto" name="Country">
                                             @foreach (var re in @Model.CountryList)
                                             {
                                                 if (Model.CountryList.Count() != Model.SelectedCountryList.Count() && Model.SelectedCountryList.Contains(re))
                                                 {
-                                            <option value='@re' selected> &nbsp;@re</option>
+                                                    <option value='@re' selected> &nbsp;@re</option>
                                                 }
                                                 else
                                                 {
-                                            <option value='@re'> &nbsp;@re</option>
+                                                    <option value='@re'> &nbsp;@re</option>
                                                 }
                                             }
 
@@ -251,13 +254,13 @@
                                         </script>
                                     </li>
                                     <li>
-                                        <h5>Status</h5>
+                                        @*<h5>Status</h5>*@
                                         <select multiple="multiple" style="width:85%; margin:0, auto" name="Status">
                                             @foreach (var re in @Model.StatusList)
                                             {
                                                 if (Model.StatusList.Count() != Model.SelectedStatusList.Count() && Model.SelectedStatusList.Contains(re))
                                                 {
-                                            <option value='@re' selected> &nbsp;@re</option>
+                                                    <option value='@re' selected> &nbsp;@re</option>
                                                 }
                                                 else
                                                 {
@@ -275,8 +278,12 @@
                                     </li>
 
                                     <li>
-                                        <input type="submit" name="BtnSubmit" class="btn btn-primary" style="vertical-align: top" value="Submit" />
+                                        <div>
+                                            <input type="submit" name="BtnSubmit" class="btn btn-primary" style="vertical-align: top" value="Submit" />
+                                            <a href="/Report/index" class="btn btn-warning">Reset</a>
+                                        </div>
                                     </li>
+                                    
                                 </ul>
                             </form>
                         </div>
@@ -297,16 +304,6 @@
 
                 @RenderSection("ContentBody")
 
-                <footer>
-                    <div class="pull-right">
-                        Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-                    </div>
-                    <div class="clearfix"></div>
-
-                </footer>
-                <!-- /footer content -->
-                <!-- Custom Theme Scripts -->
-                @* <script src="~/UI/build/js/custom.js"></script>*@
             </div>
     </div>
 </body>

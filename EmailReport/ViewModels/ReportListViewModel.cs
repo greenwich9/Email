@@ -27,7 +27,8 @@ namespace EmailReport.ViewModels
         // public Boolean HasEmployeeData { get; set; }
         public string json { get; set; }
         public string GraphLine { get; set; }
-        
+        public Boolean WorldMap { get; set; }
+        public Boolean LineGraph { get; set; }
 
         public ReportListViewModel()
         {
@@ -55,6 +56,7 @@ namespace EmailReport.ViewModels
             SelectedRegionList = new List<string>();
             SelectedCountryList = new List<string>();
             SelectedStatusList = new List<string>();
+
         }
     
     }

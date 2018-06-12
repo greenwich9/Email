@@ -28,8 +28,11 @@ namespace EmailReport.Controllers
             //get employee info from DB
             List<Employee> employees = new List<Employee>();
             employees = empBal.GetEmployees();
-
-            
+            var ep = from e in employees
+                        group e by e.Email into grp
+                        select new Employee{ Email = grp.Key, L1 = grp.Last().L1, L2 = grp.Last().L2, L3 = grp.Last().L3, L4 = grp.Last().L4, L5 = grp.Last().L5,
+                            AreaCode = grp.Last().AreaCode, Country = grp.Last().Country, Status = grp.Last().Status};
+            employees = (List<Employee>)ep.ToList();
             //System.Diagnostics.Debug.WriteLine(employees.Count());
             // initialize regionCodeCount list incase null pointer exception
             List < RegionCodeCount > regionCodeCount = new List<RegionCodeCount>();
@@ -43,10 +46,10 @@ namespace EmailReport.Controllers
             ReportListViewModel.RegionCodeCount = regionCodeCount;
            
             //ReportListViewModel.AsianPacific = new List<CountryCount>();
-            if (allReports.Count() == 0)
-            {
-                return View("Index", ReportListViewModel);
-            }
+            //if (allReports.Count() == 0)
+            //{
+            //    return View("Index", ReportListViewModel);
+            //}
 
             // initialize baseview model
             BaseViewModel Base = new BaseViewModel();
@@ -92,6 +95,10 @@ namespace EmailReport.Controllers
             var RegionList = from e in employees
                      select e.AreaCode;
             List<string> Regionl = RegionList.Distinct().ToList();
+            if (Regionl.Contains("EUR"))
+            {
+                Regionl.Remove("EUR");
+            }
             Regionl.Sort();
             Base.RegionList = Regionl;
 
@@ -266,9 +273,9 @@ namespace EmailReport.Controllers
             }
 
             // get the number of 
-            var regionCode = from m in Reports
-                             where m.Event1 == "open"
-                             join code in employees on m.Email equals code.Email
+            var regionCode = from m in open.Distinct()
+                             
+                             join code in employees on m equals code.Email
                              group code by code.AreaCode into grp
                              select new { code = grp.Key, cnt = grp.Distinct().Count() };
 
@@ -283,29 +290,35 @@ namespace EmailReport.Controllers
             var upgroupedCount = open.Distinct().Count();
             foreach (var item in regionCode)
             {
-                upgroupedCount -= item.cnt;
+
                 switch (item.code)
                 {
                     case "AMS":
                         regionCodeCount.ElementAt(0).RegionCode = item.code;
                         regionCodeCount.ElementAt(0).Count = item.cnt;
+                        upgroupedCount -= item.cnt;
                         break;
                     case "EMEA":
                         regionCodeCount.ElementAt(1).RegionCode = item.code;
                         regionCodeCount.ElementAt(1).Count += item.cnt;
+                        upgroupedCount -= item.cnt;
                         break;
                     case "EUR":
                         //regionCodeCount.ElementAt(1).RegionCode = item.code;
                         regionCodeCount.ElementAt(1).Count += item.cnt;
+                        upgroupedCount -= item.cnt;
                         break;
                     case "APJ":
                         regionCodeCount.ElementAt(2).RegionCode = item.code;
                         regionCodeCount.ElementAt(2).Count = item.cnt;
+                        upgroupedCount -= item.cnt;
                         break;
-                    
+
                 }
 
             }
+
+        
 
             regionCodeCount.ElementAt(3).RegionCode = "Ungrouped";
             regionCodeCount.ElementAt(3).Count = upgroupedCount;
@@ -378,16 +391,15 @@ namespace EmailReport.Controllers
             Map.AddRange(asianPacific);
             Map.AddRange(EMEA);
             string output = jss.Serialize(Map);
-            output = output.Replace("\"Korea, Republic of\"", "North Korea").Replace("\"Country\"", "name").Replace("\"Count\"", "value").Replace("\"", "\'");
+            output = output.Replace("\"Country\"", "name").Replace("\"Count\"", "value").Replace("\"", "\'");
             ReportListViewModel.json = output;
             //System.Diagnostics.Debug.WriteLine(output);
 
-            //
 
             string GraphLine = jss.Serialize(ReportListViewModel.DateCount);
             GraphLine = GraphLine.Replace("\"Date\"", "Date").Replace("\"APJCount\"", "APJ").Replace("\"AMSCount\"", "AMS").Replace("\"EURCount\"", "EUR").Replace("\"EMEACount\"", "EMEA").Replace("\"", "\'");
             ReportListViewModel.GraphLine = GraphLine;
-            System.Diagnostics.Debug.WriteLine(GraphLine);
+            //System.Diagnostics.Debug.WriteLine(GraphLine);
             return View("Index", ReportListViewModel);
 
         }
@@ -502,7 +514,7 @@ namespace EmailReport.Controllers
 
             List<Employee> employees = new List<Employee>();
             employees = empBal.GetEmployees();
-            System.Diagnostics.Debug.WriteLine("number of all employee " + Request.Form["L1"]);
+            //System.Diagnostics.Debug.WriteLine("number of all employee " + Request.Form["L1"]);
 
             if (Request.Form.AllKeys.Contains("L1"))
             {
@@ -605,6 +617,10 @@ namespace EmailReport.Controllers
                 {
                     string[] RegionValues = Regex.Split(Region, "(?<=^[^\"]*(?:\"[^\"]*\"[^\"]*)*),(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
                     List<string> RegionList = RegionValues.OfType<string>().ToList();
+                    if (RegionList.Contains("EMEA"))
+                    {
+                        RegionList.Add("EUR");
+                    }
                     employees = employees.Where(a => RegionList.Contains(a.AreaCode)).ToList();
 
                     GlobalVariables.RegionList = RegionList;
@@ -784,35 +800,41 @@ namespace EmailReport.Controllers
                 RegionCodeCount region = new RegionCodeCount();
                 regionCodeCount.Add(region);
             }
+
             var upgroupedCount = open.Distinct().Count();
             foreach (var item in regionCode)
             {
-                upgroupedCount -= item.cnt;
+                
                 switch (item.code)
                 {
                     case "AMS":
                         regionCodeCount.ElementAt(0).RegionCode = item.code;
                         regionCodeCount.ElementAt(0).Count = item.cnt;
+                        upgroupedCount -= item.cnt;
+                        break;
+                    case "EMEA":
+                        regionCodeCount.ElementAt(1).RegionCode = item.code;
+                        regionCodeCount.ElementAt(1).Count += item.cnt;
+                        upgroupedCount -= item.cnt;
                         break;
                     case "EUR":
-                        regionCodeCount.ElementAt(1).RegionCode = item.code;
-                        regionCodeCount.ElementAt(1).Count = item.cnt;
+                        //regionCodeCount.ElementAt(1).RegionCode = item.code;
+                        regionCodeCount.ElementAt(1).Count += item.cnt;
+                        upgroupedCount -= item.cnt;
                         break;
                     case "APJ":
                         regionCodeCount.ElementAt(2).RegionCode = item.code;
                         regionCodeCount.ElementAt(2).Count = item.cnt;
+                        upgroupedCount -= item.cnt;
                         break;
-                    case "EMEA":
-                        regionCodeCount.ElementAt(1).RegionCode = item.code;
-                        regionCodeCount.ElementAt(1).Count = item.cnt;
-                        break;
+
                 }
-               
+
             }
 
             regionCodeCount.ElementAt(3).RegionCode = "Ungrouped";
             regionCodeCount.ElementAt(3).Count = upgroupedCount;
-            
+
 
             ReportListViewModel.RegionCodeCount = regionCodeCount;
 
@@ -881,9 +903,10 @@ namespace EmailReport.Controllers
             Map.AddRange(europe);
             Map.AddRange(EMEA);
             string output = jss.Serialize(Map);
-            output = output.Replace("\"Korea, Republic of\"", "North Korea").Replace("\"Country\"", "name").Replace("\"Count\"", "value").Replace("\"", "\'");
+            output = output.Replace("\"Country\"", "name").Replace("\"Count\"", "value").Replace("\"", "\'").Replace("\'Korea, Republic of\'", "South Korea");
             ReportListViewModel.json = output;
-            //System.Diagnostics.Debug.WriteLine(output);
+            ReportListViewModel.WorldMap = !output.Equals("");
+            System.Diagnostics.Debug.WriteLine(output);
 
             string GraphLine = jss.Serialize(ReportListViewModel.DateCount);
             GraphLine = GraphLine.Replace("\"Date\"", "Date").Replace("\"APJCount\"", "APJ").Replace("\"AMSCount\"", "AMS").Replace("\"EURCount\"", "EUR").Replace("\"EMEACount\"", "EMEA").Replace("\"", "\'");
