@@ -264,7 +264,7 @@ namespace EmailReport.Controllers
                              group code by code.AreaCode into grp
                              select new { code = grp.Key, cnt = grp.Distinct().Count() };
 
-
+            // add region count for for regions and update the number of users
             regionCodeCount = new List<RegionCodeCount>();
             
             for (i = 0; i < 4; i++)
@@ -307,7 +307,7 @@ namespace EmailReport.Controllers
             regionCodeCount.ElementAt(3).Count = upgroupedCount;
             ReportListViewModel.RegionCodeCount = regionCodeCount;
 
-
+            // group data by country and put them in to coresponding region group
             var countrySet = from m in Reports
                              where m.Event1 == "open"
                              join code in employees on m.Email equals code.Email
@@ -365,6 +365,8 @@ namespace EmailReport.Controllers
                 reportViewModels.Add(reportViewModel);
             }
             ReportListViewModel.Records = reportViewModels;
+
+            //genereate the data for the world map and the line graph
             JavaScriptSerializer jss = new JavaScriptSerializer();
 
             List<CountryCount> Map = new List<CountryCount>();
