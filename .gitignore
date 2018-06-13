@@ -1,1 +1,3 @@
 .vs/
+./EmailReport/App_Data
+./EmailReport/bin
