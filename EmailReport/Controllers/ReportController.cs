@@ -467,7 +467,7 @@ namespace EmailReport.Controllers
             {
                 GlobalVariables.End = DateTime.Parse(Request.Form["EndDate"]).ToString("o").Substring(0, 10);
             }
-
+            System.Diagnostics.Debug.WriteLine(GlobalVariables.Start);
             ReportListViewModel ReportListViewModel = new ReportListViewModel();
             ReportBusinessLayer empBal = new ReportBusinessLayer();
             List<LogRecord> AllRecords = empBal.GetRecords();
@@ -757,11 +757,11 @@ namespace EmailReport.Controllers
             ReportListViewModel.DeliveredCount = delivered.Distinct().Count();
 
 
-            var regionCode = from m in Reports
-                             where m.Event1 == "open"
-                             join code in employees on m.Email equals code.Email
+            var regionCode = from m in open.Distinct()
+                             join code in employees on m equals code.Email
                              group code by code.AreaCode into grp
                              select new { code = grp.Key, cnt = grp.Distinct().Count() };
+
             List<RegionCodeCount> regionCodeCount = new List<RegionCodeCount>();
             int i = 0;
             for (i = 0; i < 4; i++)

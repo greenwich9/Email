@@ -8894,7 +8894,9 @@
     <Content Include="Views\Shared\MyLayout.cshtml" />
     <Content Include="Views\BulkUpload\Index.cshtml" />
     <Content Include="Views\Report\Details.cshtml" />
-    <Content Include="Views\Web.config" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
