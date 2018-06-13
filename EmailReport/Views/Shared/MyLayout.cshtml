@@ -16,7 +16,7 @@
     <link href="~/UI/vendors/nprogress/nprogress.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
-    <link href="~/UI/build/css/custom.min.css" rel="stylesheet">
+    <link href="~/UI/build/css/custom.css" rel="stylesheet">
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script src="http://www.chartjs.org/dist/2.7.2/Chart.bundle.js"></script>
     <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
@@ -30,13 +30,28 @@
     <script src="~/UI/vendors/fastclick/lib/fastclick.js"></script>
     <!-- NProgress -->
     <script src="~/UI/vendors/nprogress/nprogress.js"></script>
+    <style>
+        .nav-sm .left_col {
+            display: none;
+            width: 0px;
+        }
+
+        .nav-sm .right_col {
+            margin: 0px,0px,0px,0px;
+        }
+    </style>
 
     <title>@RenderSection("TitleSection") </title>
     <style>
         .canvasjs-chart-credit {
             display: none;
         }
+
+        .nav-sm .main_container .top_nav {
+            margin-left: 0px;
+        }
     </style>
+
     <link href="~/UI/multiple-select.css" rel="stylesheet" />
     <!-- Bootstrap -->
     <link href="~/UI/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -46,18 +61,40 @@
     <link href="~/UI/vendors/nprogress/nprogress.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
-    <link href="~/UI/build/css/custom.min.css" rel="stylesheet">
+    <link href="~/UI/build/css/custom.css" rel="stylesheet">
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gijgo@1.9.6/js/gijgo.min.js" type="text/javascript"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/gijgo@1.9.6/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     @RenderSection("HeaderSection", false)
+
+    <script>
+        $(document).ready(function () {
+            $('#m_toggle').on('click', function () {
+                console.log('clicked - menu toggle');
+
+                //if ($('body').hasClass('nav-md')) {
+                //    $SIDEBAR_MENU.find('li.active ul').hide();
+                //    $SIDEBAR_MENU.find('li.active').addClass('active-sm').removeClass('active');
+                //} else {
+                //    $SIDEBAR_MENU.find('li.active-sm ul').show();
+                //    $SIDEBAR_MENU.find('li.active-sm').addClass('active').removeClass('active-sm');
+                //}
+
+                $('body').toggleClass('nav-md nav-sm');
+
+
+
+
+            });
+        })
+    </script>
 </head>
 
 <body class="nav-md">
     <div class="container body">
         <div class="main_container">
-            <div class="col-md-3 left_col">
+            <div class="col-md-3 left_col" >
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
                         <a href="/Report/index" class="site_title"><i class="fa fa-bar-chart"></i> <span> Overview</span></a>
@@ -69,6 +106,7 @@
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
 
                         <div class="menu_section">
+                            <a href="/BulkUpload/Index" style="font-size:large" class="btn btn-default">Upload</a>
                             <h2>Filter</h2>
                             <form action="/Report/DateRange" method="post" class="form-group align-self-end ;">
                                 <ul class="nav side-menu">
@@ -283,7 +321,7 @@
                                             <a href="/Report/index" class="btn btn-warning">Reset</a>
                                         </div>
                                     </li>
-                                    
+
                                 </ul>
                             </form>
                         </div>
@@ -295,9 +333,9 @@
                     <div class="nav_menu">
                         <nav>
                             <div class="nav toggle">
-                                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                                <a id="m_toggle"><i class="fa fa-bars"></i></a>
                             </div>
-                            <a href="/BulkUpload/Index" style="font-size:large" class="btn btn-default pull-right">Upload</a>
+                            
                         </nav>
                     </div>
                 </div>

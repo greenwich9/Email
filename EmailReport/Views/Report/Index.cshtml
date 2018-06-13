@@ -10,16 +10,13 @@
 }
 
 @section HeaderSection{
-    <link href="~/UI/build/css/custom.min.css" rel="stylesheet">
-    <script src="~/UI/build/js/custom.min.js"></script>
+
     <link href="~/UI/vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/gijgo@1.9.6/js/gijgo.min.js" type="text/javascript"></script>
     <script src="~/UI/vendors/echarts/dist/echarts.min.js"></script>
     <script src="~/UI/vendors/echarts/map/js/world.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/gijgo@1.9.6/css/gijgo.min.css" rel="stylesheet" type="text/css" />
-    <link href="~/UI/build/css/custom.min.css" rel="stylesheet">
-    <link href="~/UI/build/css/custom.min.css" rel="stylesheet">
-    <script src="~/UI/build/js/custom.min.js"></script>
+
     <script src="~/UI/vendors/raphael/raphael.min.js"></script>
     <script src="~/UI/vendors/morris.js/morris.min.js"></script>
     <style>
@@ -620,7 +617,7 @@
         <table class="table table-striped">
             <tr>
                 <td valign="top">
-                    <table class="table table-striped jambo_table">
+                    <table class="table table-striped jambo_table col-sm-12">
                         <thead>
                             <tr class="headings">
                                 <th>AMS (@Model.RegionCodeCount.ElementAt(0).Count Unique Users)</th>
@@ -641,7 +638,7 @@
 
                 </td>
                 <td valign="top">
-                    <table class="table table-striped jambo_table">
+                    <table class="table table-striped jambo_table col-sm-12">
                         <thead>
                             <tr class="headings">
                                 <th>EMEA (@Model.RegionCodeCount.ElementAt(1).Count Unique Users)</th>
@@ -662,7 +659,7 @@
 
 
                 <td valign="top">
-                    <table class="table table-striped jambo_table">
+                    <table class="table table-striped jambo_table col-sm-12">
                         <thead>
                             <tr class="headings">
                                 <th>APJ (@Model.RegionCodeCount.ElementAt(2).Count Unique Users)</th>
