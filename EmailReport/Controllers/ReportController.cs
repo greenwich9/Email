@@ -197,7 +197,7 @@ namespace EmailReport.Controllers
                             case "EMEA":
                                 EMEACount++;
                                 break;
-                            case "":
+                            default:
                                 UnGrouped++;
                                 break;
                         }
@@ -273,6 +273,8 @@ namespace EmailReport.Controllers
                 regionCodeCount.Add(region);
             }
             var upgroupedCount = open.Distinct().Count();
+
+            System.Diagnostics.Debug.WriteLine(upgroupedCount + "count is");
             foreach (var item in regionCode)
             {
 
@@ -302,7 +304,7 @@ namespace EmailReport.Controllers
                 }
 
             }
-
+            System.Diagnostics.Debug.WriteLine(upgroupedCount + "count is");
             regionCodeCount.ElementAt(3).RegionCode = "Ungrouped";
             regionCodeCount.ElementAt(3).Count = upgroupedCount;
             ReportListViewModel.RegionCodeCount = regionCodeCount;
@@ -467,7 +469,7 @@ namespace EmailReport.Controllers
             {
                 GlobalVariables.End = DateTime.Parse(Request.Form["EndDate"]).ToString("o").Substring(0, 10);
             }
-            System.Diagnostics.Debug.WriteLine(GlobalVariables.Start);
+            
             ReportListViewModel ReportListViewModel = new ReportListViewModel();
             ReportBusinessLayer empBal = new ReportBusinessLayer();
             List<LogRecord> AllRecords = empBal.GetRecords();
@@ -486,8 +488,27 @@ namespace EmailReport.Controllers
 
             List<ReportViewModel> reportViewModels = new List<ReportViewModel>();
 
-            List<Employee> employees = new List<Employee>();
-            employees = empBal.GetEmployees();
+            List<Employee> allEmployees = new List<Employee>();
+            allEmployees = empBal.GetEmployees();
+
+            // group by email so that repetiotiones in the data won't affect the result
+            var ep = from e in allEmployees
+                     group e by e.Email into grp
+                     select new Employee
+                     {
+                         Email = grp.Key,
+                         L1 = grp.Last().L1,
+                         L2 = grp.Last().L2,
+                         L3 = grp.Last().L3,
+                         L4 = grp.Last().L4,
+                         L5 = grp.Last().L5,
+                         AreaCode = grp.Last().AreaCode,
+                         Country = grp.Last().Country,
+                         Status = grp.Last().Status
+                     };
+
+
+            List<Employee> employees = (List<Employee>)ep.ToList();
             //System.Diagnostics.Debug.WriteLine("number of all employee " + Request.Form["L1"]);
 
             if (Request.Form.AllKeys.Contains("L1"))
@@ -645,9 +666,6 @@ namespace EmailReport.Controllers
                 ReportListViewModel.SelectedStatusList = GlobalVariables.Base.StatusList;
             }
 
-            Reports = from m in Reports
-                      join e in employees on m.Email equals e.Email
-                      select m;
 
             var email = from m in Reports
                         select m.Email;
@@ -655,35 +673,31 @@ namespace EmailReport.Controllers
             int uniqueUser = email.Distinct().Count();
             ReportListViewModel.UniqueUser = uniqueUser;
 
+            // group the email info by date
             var dateInfo = from m in Reports
                            where m.Event1 == "open"
-                           orderby DateTime.Parse(m.DateInclude).Year.ToString() + "-" + DateTime.Parse(m.DateInclude).Month.ToString() + "-" + DateTime.Parse(m.DateInclude).Day.ToString()
-                           group m by DateTime.Parse(m.DateInclude).Year.ToString() + "-" + DateTime.Parse(m.DateInclude).Month.ToString() + "-" + DateTime.Parse(m.DateInclude).Day.ToString() into grp
-                           select new { key = grp.Key, cnt = grp.Count() };
+                           orderby DateTime.Parse(m.DateInclude).ToString("o").Substring(0, 10)
+                           group m by DateTime.Parse(m.DateInclude).ToString("o").Substring(0, 10) into grp
+                           select new DateCount { Date = grp.Key, Count = grp.Count() };
 
-           
-            List<DateCount> dateCount = new List<DateCount>();
-            foreach (var item in dateInfo)
-            {
-                DateCount date = new DateCount();
-                date.Date = item.key;
+            // store the info of date into list
+            List<DateCount> dateCount = dateInfo.ToList();
 
-                date.Count = item.cnt;
-                dateCount.Add(date);
-            }
 
+
+            //find out the infomaition of the openned emails
             var dateRegionInfo = from m in Reports
                                  where m.Event1 == "open"
                                  join code in employees on m.Email equals code.Email into ji
                                  from sub in ji.DefaultIfEmpty()
-                                 select new { date = DateTime.Parse(m.DateInclude).Year.ToString() + "-" + DateTime.Parse(m.DateInclude).Month.ToString() + "-" + DateTime.Parse(m.DateInclude).Day.ToString(), region = sub?.AreaCode ?? String.Empty };
+                                 select new { date = DateTime.Parse(m.DateInclude).ToString("o").Substring(0, 10), region = sub?.AreaCode ?? String.Empty };
             List<DateCount> finalDateCount = new List<DateCount>();
 
+            //calculate the count for each region for each day
             foreach (var item in dateCount)
             {
 
                 int APJCount = 0;
-                int EURCount = 0;
                 int AMSCount = 0;
                 int EMEACount = 0;
                 int UnGrouped = 0;
@@ -706,20 +720,21 @@ namespace EmailReport.Controllers
                             case "EMEA":
                                 EMEACount++;
                                 break;
-                            case "":
+                            default:
                                 UnGrouped++;
                                 break;
                         }
                     }
                 }
                 item.AMSCount = AMSCount;
-                item.EURCount = EURCount;
                 item.APJCount = APJCount;
                 item.EMEACount = EMEACount;
                 item.UnGrouped = UnGrouped;
                 finalDateCount.Add(item);
             }
+
             ReportListViewModel.DateCount = finalDateCount;
+
 
             var clickUser = from m in Reports
                             where m.Event1 == "click"
@@ -771,6 +786,7 @@ namespace EmailReport.Controllers
             }
 
             var upgroupedCount = open.Distinct().Count();
+            System.Diagnostics.Debug.WriteLine(upgroupedCount + "count is");
             foreach (var item in regionCode)
             {
                 
@@ -803,7 +819,7 @@ namespace EmailReport.Controllers
 
             regionCodeCount.ElementAt(3).RegionCode = "Ungrouped";
             regionCodeCount.ElementAt(3).Count = upgroupedCount;
-
+            System.Diagnostics.Debug.WriteLine(upgroupedCount + "count is");
 
             ReportListViewModel.RegionCodeCount = regionCodeCount;
 
@@ -875,11 +891,13 @@ namespace EmailReport.Controllers
             output = output.Replace("\"Country\"", "name").Replace("\"Count\"", "value").Replace("\"", "\'").Replace("\'Korea, Republic of\'", "South Korea");
             ReportListViewModel.json = output;
             ReportListViewModel.WorldMap = !output.Equals("");
-            System.Diagnostics.Debug.WriteLine(output);
+            
 
             string GraphLine = jss.Serialize(ReportListViewModel.DateCount);
             GraphLine = GraphLine.Replace("\"Date\"", "Date").Replace("\"APJCount\"", "APJ").Replace("\"AMSCount\"", "AMS").Replace("\"EURCount\"", "EUR").Replace("\"EMEACount\"", "EMEA").Replace("\"", "\'");
             ReportListViewModel.GraphLine = GraphLine;
+            System.Diagnostics.Debug.WriteLine(GraphLine);
+
 
             ReportListViewModel.L1List = GlobalVariables.Base.L1List;
             ReportListViewModel.L2List = GlobalVariables.Base.L2List;
