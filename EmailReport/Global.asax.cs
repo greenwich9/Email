@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using EmailReport.DataAccessLayer;
+using EmailReport.Migrations;
 
 namespace EmailReport
 {
@@ -18,7 +19,8 @@ namespace EmailReport
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            Database.SetInitializer(new DropCreateDatabaseIfModelChanges<ReportsERPDAL>());
+            //Database.SetInitializer(new DropCreateDatabaseAlways<ReportsERPDAL>());
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<ReportsERPDAL, Configuration>());
         }
 
     }
