@@ -13,6 +13,7 @@ namespace EmailReport.Models
         public int Id { get; set; }
         [Column("Email")]
         public string Email { get; set; }
+
         public string L1 { get; set; }
         public string L2 { get; set; }
         public string L3 { get; set; }
