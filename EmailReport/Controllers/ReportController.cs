@@ -507,13 +507,13 @@ namespace EmailReport.Controllers
             reportListDetailsViewModel.TotalCount = recordsords.Count();
             var em = from m in recordsords
                        where m.Event1.Equals(id) && GlobalVariables.Start.CompareTo(DateTime.Parse(m.DateInclude).ToString("o").Substring(0, 10)) <= 0 && GlobalVariables.End.CompareTo(DateTime.Parse(m.DateInclude).ToString("o").Substring(0, 10)) >= 0
-                       select m.Email;
+                       select m.Email.ToLower();
             
 
             var empDetail = from m in em
-                            join empl in employees on m equals empl.Email
+                            join empl in employees on m equals empl.Email.ToLower()
                             group empl by empl.Email into grp
-                            select new { Email = grp.Key, Cnt = grp.Count(), Code = grp.First().AreaCode, Cty = grp.First().Country};
+                            select new { Email = grp.Key.ToLower(), Cnt = grp.Count(), Code = grp.First().AreaCode, Cty = grp.First().Country};
 
             reportListDetailsViewModel.CurCount = em.Distinct().Count();
             foreach (var detail in empDetail)

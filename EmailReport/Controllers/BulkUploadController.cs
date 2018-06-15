@@ -67,7 +67,7 @@ namespace EmailReport.Controllers
                     LogRecord e = new LogRecord();
                     
                     e.DateInclude = values[0];
-                    e.Email = values[1];
+                    e.Email = values[1].ToLower();
                     e.Event1 = values[2];
                     e.Url = values[8];
                     employees.Add(e);
@@ -101,7 +101,7 @@ namespace EmailReport.Controllers
                 if (!values[0].Equals("Email"))
                 {
                     Employee e = new Employee();
-                    e.Email = values[0];
+                    e.Email = values[0].ToLower();
                     e.L1 = values[3];
                     e.L2 = values[4];
                     e.L3 = values[5];
