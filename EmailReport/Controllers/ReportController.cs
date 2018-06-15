@@ -500,6 +500,8 @@ namespace EmailReport.Controllers
             employees = employees.Where(a => GlobalVariables.L5List.Contains(a.L5)).ToList();
             employees = employees.Where(a => GlobalVariables.RegionList.Contains(a.AreaCode)).ToList();
             employees = employees.Where(a => GlobalVariables.CountryList.Contains(a.Country)).ToList();
+          
+
             employees = employees.Where(a => GlobalVariables.StatusList.Contains(a.Status)).ToList();
 
             reportListDetailsViewModel.TotalCount = recordsords.Count();
@@ -582,7 +584,7 @@ namespace EmailReport.Controllers
 
             List<Employee> allEmployees = new List<Employee>();
             allEmployees = empBal.GetEmployees();
-            System.Diagnostics.Debug.WriteLine(allEmployees.Count() + "all employee count is");
+            //System.Diagnostics.Debug.WriteLine(allEmployees.Count() + "all employee count is");
             // group by email so that repetiotiones in the data won't affect the result
             List<LogRecord> temp = new List<LogRecord>();
             foreach (LogRecord rec in AllRecords)
@@ -722,9 +724,13 @@ namespace EmailReport.Controllers
                 {
                     string[] RegionValues = Regex.Split(Region, "(?<=^[^\"]*(?:\"[^\"]*\"[^\"]*)*),(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
                     List<string> RegionList = RegionValues.OfType<string>().ToList();
-                    if (RegionList.Contains("EMEA"))
+                    if (RegionList.Contains("EMEA") && !RegionList.Contains("EUR"))
                     {
                         RegionList.Add("EUR");
+                    }
+                    if (RegionList.Contains("EUR") && !RegionList.Contains("EMEA"))
+                    {
+                        RegionList.Add("EMEA");
                     }
                     employees = employees.Where(a => RegionList.Contains(a.AreaCode)).ToList();
 
