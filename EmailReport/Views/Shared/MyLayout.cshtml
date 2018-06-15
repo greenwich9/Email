@@ -50,6 +50,10 @@
         .nav-sm .main_container .top_nav {
             margin-left: 0px;
         }
+        #icon {
+            width:35px;
+            height:35px;
+        }
     </style>
 
     <link href="~/UI/multiple-select.css" rel="stylesheet" />
@@ -73,19 +77,7 @@
             $('#m_toggle').on('click', function () {
                 console.log('clicked - menu toggle');
 
-                //if ($('body').hasClass('nav-md')) {
-                //    $SIDEBAR_MENU.find('li.active ul').hide();
-                //    $SIDEBAR_MENU.find('li.active').addClass('active-sm').removeClass('active');
-                //} else {
-                //    $SIDEBAR_MENU.find('li.active-sm ul').show();
-                //    $SIDEBAR_MENU.find('li.active-sm').addClass('active').removeClass('active-sm');
-                //}
-
                 $('body').toggleClass('nav-md nav-sm');
-
-
-
-
             });
         })
     </script>
@@ -96,22 +88,23 @@
         <div class="main_container">
             <div class="col-md-3 left_col" >
                 <div class="left_col scroll-view">
-                    <div class="navbar nav_title" style="border: 0;">
-                        <a href="/Report/index" class="site_title"><i class="fa fa-bar-chart"></i> <span> Overview</span></a>
+                    <div class="navbar nav_title" style="border: 0; text-align:center; padding:0px">
+                        <a href="/Report/index" class="site_title" style="padding:0px"><img id="icon" src="~/img/DYDLogo_ball_White96x96.png"> <span> Menu</span></a>
                     </div>
                     <br />
                     <br />
                     <br />
                     <br />
-                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu" style="margin-left:20px;">
 
                         <div class="menu_section">
-                            <a href="/BulkUpload/Index" style="font-size:large" class="btn btn-default">Upload</a>
-                            <h2>Filter</h2>
+                            <a href="/BulkUpload/Index" style="font-size:large; width:183px" class="btn btn-default">Upload</a>
+                            <br />
+                            <br />
                             <form action="/Report/DateRange" method="post" class="form-group align-self-end ;">
                                 <ul class="nav side-menu">
                                     <li>
-                                        <label for="StartDate" class="form-inline" style="font-size:large; vertical-align: top"> From : <input id="StartDate" name="StartDate" width="200" style="vertical-align: bottom" value="@Model.Start" /></label>
+                                        <label for="StartDate" class="form-inline" style="font-size:initial; vertical-align: top"> From : <input id="StartDate" name="StartDate" width="183" style="vertical-align: bottom" value="@Model.Start" /></label>
                                         <script>
                                             $('#StartDate').datepicker({
 
@@ -120,7 +113,7 @@
                                         </script>
                                     </li>
                                     <li>
-                                        <label for="EndDate" class="form-inline" style="font-size:large; vertical-align: top">  To : <input id="EndDate" name="EndDate" style="vertical-align: middle" width="200" value="@Model.End" /></label>
+                                        <label for="EndDate" class="form-inline" style="font-size:initial; vertical-align: top">  To : <input id="EndDate" name="EndDate" style="vertical-align: middle" width="183" value="@Model.End" /></label>
                                         <script>
                                             $('#EndDate').datepicker({
                                                 uiLibrary: 'bootstrap'
@@ -148,7 +141,7 @@
                                         <script src="~/Scripts/multiple-select.js"></script>
                                         <script>
                                             $("select").multipleSelect({
-                                                placeholder: "Please select L1 Value"
+                                                placeholder: "Please Select L1 Value"
                                             });
                                         </script>
                                     </li>
@@ -171,7 +164,7 @@
                                         <script src="~/Scripts/multiple-select.js"></script>
                                         <script>
                                             $("select").multipleSelect({
-                                                placeholder: "Please select L2 Value"
+                                                placeholder: "Please Select L2 Value"
                                             });
                                         </script>
                                     </li>
@@ -194,7 +187,7 @@
                                         <script src="~/Scripts/multiple-select.js"></script>
                                         <script>
                                             $("select").multipleSelect({
-                                                placeholder: "Please select L3 Value"
+                                                placeholder: "Please Select L3 Value"
                                             });
                                         </script>
                                     </li>
@@ -217,7 +210,7 @@
                                         <script src="~/Scripts/multiple-select.js"></script>
                                         <script>
                                             $("select").multipleSelect({
-                                                placeholder: "Please select L4 Value"
+                                                placeholder: "Please Select L4 Value"
                                             });
                                         </script>
                                     </li>
@@ -240,7 +233,7 @@
                                         <script src="~/Scripts/multiple-select.js"></script>
                                         <script>
                                             $("select").multipleSelect({
-                                                placeholder: "Please select L5 Value"
+                                                placeholder: "Please Select L5 Value"
                                             });
                                         </script>
                                     </li>
@@ -264,7 +257,7 @@
                                         <script src="~/Scripts/multiple-select.js"></script>
                                         <script>
                                             $("select").multipleSelect({
-                                                placeholder: "Please select region"
+                                                placeholder: "Please Select Region"
                                             });
                                         </script>
                                     </li>
@@ -287,7 +280,7 @@
                                         <script src="~/Scripts/multiple-select.js"></script>
                                         <script>
                                             $("select").multipleSelect({
-                                                placeholder: "Please select country"
+                                                placeholder: "Please Select Country"
                                             });
                                         </script>
                                     </li>
@@ -310,15 +303,15 @@
                                         <script src="~/Scripts/multiple-select.js"></script>
                                         <script>
                                             $("select").multipleSelect({
-                                                placeholder: "Please select status"
+                                                placeholder: "Please Select Status"
                                             });
                                         </script>
                                     </li>
 
                                     <li>
                                         <div>
-                                            <input type="submit" name="BtnSubmit" class="btn btn-primary" style="vertical-align: top" value="Submit" />
-                                            <a href="/Report/index" class="btn btn-warning">Reset</a>
+                                            <input type="submit" name="BtnSubmit" class="btn btn-primary" style="vertical-align: top; width:86px" value="Submit" />
+                                            <a href="/Report/index" class="btn btn-dark" role="button" style="vertical-align: top; width:86px">Reset</a>
                                         </div>
                                     </li>
 
@@ -332,10 +325,10 @@
                 <div class="top_nav">
                     <div class="nav_menu">
                         <nav>
-                            <div class="nav toggle">
-                                <a id="m_toggle"><i class="fa fa-bars"></i></a>
+                            <div class="nav toggle" style="padding-top:4px">
+                                <a id="m_toggle" ><i class="fa fa-bars"></i></a>
                             </div>
-                            
+                            <h2 style="font-family:Arial">Email Analyticals</h2>
                         </nav>
                     </div>
                 </div>

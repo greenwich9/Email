@@ -54,6 +54,10 @@
             -webkit-user-select: none;
             -ms-user-select: none;
         }
+        .tables {
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
     </style>
 
     <script type="text/javascript">
@@ -480,15 +484,15 @@
 
         <div class="main_container nav-md container body">
             <div class="row" style="float:left">
-                <div class="col-md-6 col-sm-12 col-xs-12" style="float:left">
-                    <div class="x_panel tile fixed_height_320 overflow_hidden" style="height:500px">
+                <div class="col-md-5 col-sm-12 col-xs-12" style="float:left">
+                    <div class="x_panel tile fixed_height_320 overflow_hidden" style="height:530px">
                         <div class="x_title">
-                            <h2>Email Status</h2>
+                            <h3>Email Status</h3>
 
                             <div class="clearfix"></div>
                         </div>
                         <div class="x_content">
-                            <table class="" style="width:100%">
+                            <table style="width:100%;table-layout: fixed;">
                                 <tr>
                                     <th style="width:37%;">
                                         <p class="">@Model.UniqueUser Users</p>
@@ -504,7 +508,7 @@
 
                                 <tr style="font-size:initial">
 
-                                    <td>
+                                    <td style="width:70%">
                                         <p style="font-size:initial"><i class="fa fa-square blue" style="font-size:initial"></i><a href="/Report/Details/delivered">&nbsp;Delivered</a> </p>
                                     </td>
                                     <td style="font-size:initial"> @Model.DeliveredCount</td>
@@ -517,23 +521,28 @@
                                     </td>
                                     <td style="font-size:initial"> @Model.OpenCount</td>
                                 </tr>
-                                <tr style="font-size:initial">
+                                <tr style="font-size:initial; width:200px">
                                     <td>
                                         <p style="font-size:initial"><i class="fa fa-square red" style="font-size:initial"></i><a href="/Report/Details/click">&nbsp;Clicks</a> </p>
                                     </td>
                                     <td style="font-size:initial">@Model.UniqueClickUser</td>
                                 </tr>
 
-
+                                <tr style="font-size:initial; width:200px">
+                                    <td>
+                                        <p style="font-size:initial"><i class="fa fa-square black" style="font-size:initial"></i><a href="/Report/NotFoundResult">&nbsp;Not Found</a> </p>
+                                    </td>
+                                    <td style="font-size:initial">@Model.NotInListCount</td>
+                                </tr>
 
                             </table>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 col-sm-12 col-xs-12">
-                    <div class="x_panel tile fixed_height_320 overflow_hidden" style="height:500px">
+                <div class="col-md-7 col-sm-12 col-xs-12">
+                    <div class="x_panel tile fixed_height_320 overflow_hidden" style="height:530px">
                         <div class="x_title">
-                            <h2>Opened Status (Unique Users)</h2>
+                            <h3>Opened Status (Unique Users)</h3>
 
                             <div class="clearfix"></div>
                         </div>
@@ -596,13 +605,13 @@
 
         <div class="page-title">
             <div class="title_left">
-                <h2>Details of the Opens</h2>
+                <h3>Details of the Opens</h3>
             </div>
         </div>
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>World Map</h2>
+                    <h3>World Map</h3>
                     <ul class="nav navbar-right panel_toolbox">
                         
                     </ul>
@@ -618,7 +627,7 @@
         </div>
 
         <div class="row" valign="top">
-            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                 @*<td valign="top">*@
                 <table class="table table-striped jambo_table col-sm-12">
                     <thead>
@@ -642,7 +651,7 @@
 
             @*</td>*@
             @*<td valign="top">*@
-            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                 <table class="table table-striped jambo_table col-sm-12">
                     <thead>
                         <tr class="headings">
@@ -665,7 +674,7 @@
 
 
         <td valign="top">*@
-            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                 <table class="table table-striped jambo_table">
                     <thead>
                         <tr class="headings">
@@ -690,7 +699,7 @@
 
                 <div class="page-title">
                     <div class="title_left">
-                        <h2>@Model.UniqueClickUser Users Click in the URL</h2>
+                        <h3>@Model.UniqueClickUser Users Click in the URL</h3>
                     </div>
                 </div>
 
@@ -719,15 +728,15 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="x_panel tile fixed_height_320 overflow_hidden" style="height:500px">
                         <div class="x_title">
-                            <h2>Daily Open</h2>
+                            <h3>Daily Open</h3>
 
                             <div class="clearfix"></div>
                         </div>
                         <div class="x_content">
-                            <table class="" style="width:100%">
+                            <table style="width:100%; table-layout:fixed">
                                 <tr>
-                                    <td>
-                                        <div id="date_graph_line" style="width:80%; height:300px;"></div>
+                                    <td width="90%">
+                                        <div id="date_graph_line" style="width:100%; height:300px;"></div>
 
                                         <script>
                                         if ($('#date_graph_line').length) {

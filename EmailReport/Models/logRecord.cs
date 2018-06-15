@@ -23,6 +23,5 @@ namespace EmailReport.Models
         public string Timestamp { get; set; }
         [Column("Url")]
         public string Url { get; set; }
-        public string test { get; set; }
     }
 }

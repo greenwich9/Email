@@ -9,6 +9,7 @@ using EmailReport.BusinessLayer;
 using EmailReport.ViewModels;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Data.Entity;
 
 namespace EmailReport.Controllers
 {
@@ -43,6 +44,7 @@ namespace EmailReport.Controllers
         {
             List<Employee> employees = GetEmployees(model);
             ReportBusinessLayer bal = new ReportBusinessLayer();
+            
             bal.UploadEmployee(employees);
             return RedirectToAction("Index", "Report");
         }

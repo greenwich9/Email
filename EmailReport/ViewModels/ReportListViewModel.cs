@@ -18,6 +18,7 @@ namespace EmailReport.ViewModels
         public List<DateCount> DateCount { get; set; }
         public List<UrlCount> UrlCount { get; set; }
         public int UniqueClickUser { get; set; }
+        public int NotInListCount { get; set; }
 
         public List<RegionCodeCount> RegionCodeCount { get; set; }
         public List<CountryCount> America { get; set; }

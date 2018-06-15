@@ -142,5 +142,29 @@ namespace EmailReport.Models
             }
         }
 
+        public static List<LogRecord> NotFoundRecords
+        {
+            get
+            {
+                return (List<LogRecord>)HttpContext.Current.Application["NotFoundRecords"];
+            }
+            set
+            {
+                HttpContext.Current.Application["NotFoundRecords"] = value;
+            }
+        }
+
+        public static int NotFoundCount
+        {
+            get
+            {
+                return (int)HttpContext.Current.Application["NotFoundCount"];
+            }
+            set
+            {
+                HttpContext.Current.Application["NotFoundCount"] = value;
+            }
+        }
+
     }
 }

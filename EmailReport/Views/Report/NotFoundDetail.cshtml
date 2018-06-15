@@ -1,0 +1,197 @@
+﻿@using EmailReport.ViewModels
+@model NotFoundDetailViewModel
+
+@{
+    Layout = "~/Views/Shared/MyLayout.cshtml";
+}
+
+
+@section TitleSection{
+    NotFoundDetail
+}
+
+@section HeaderSection{
+
+    <link href="~/UI/vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/gijgo@1.9.6/js/gijgo.min.js" type="text/javascript"></script>
+    <script src="~/UI/vendors/echarts/dist/echarts.min.js"></script>
+    <script src="~/UI/vendors/echarts/map/js/world.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/gijgo@1.9.6/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+
+    <script src="~/UI/vendors/raphael/raphael.min.js"></script>
+    <script src="~/UI/vendors/morris.js/morris.min.js"></script>
+    <style>
+        .canvasbar {
+            width: 400px;
+            height: 250px;
+            float: left;
+            margin: 10px 0px 0px 10px;
+            position: relative;
+        }
+
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
+
+    <script type="text/javascript">
+
+      
+
+        function init_chart_bar() {
+
+            if (typeof (Chart) === 'undefined') { return; }
+
+            console.log('init_chart_bar');
+
+            if ($('.canvasbarNotFound').length) {
+
+                var chart_bar_settings = {
+
+                    type: 'bar',
+
+                    axisY: {
+                        includeZero: true  //try changing it to true
+                    },
+                    data: {
+
+                        labels: [
+                            "Delivered",
+                            "Open",
+                            "Click",
+
+                        ],
+                        datasets: [{
+                            data: [@Model.DeliveredCount, @Model.OpenCount, @Model.ClickCount],
+                            backgroundColor: [
+                                "#3498DB",
+                                "#26B99A",
+                                "#E74C3C"
+                            ],
+                            hoverBackgroundColor: [
+                                "#49A9EA",
+                                "#36CAAB",
+                                "#E95E4F"
+                            ]
+                        }]
+                    },
+                    options: {
+                        legend: false,
+                        responsive: false
+
+                    }
+                }
+
+                $('.canvasbarNotFound').each(function () {
+
+                    var chart_element = $(this);
+                    var chart_bar = new Chart(chart_element, chart_bar_settings);
+
+                });
+
+            }
+
+        }
+        
+        $(document).ready(function () {
+       
+            init_chart_bar();
+     
+        })
+    </script>
+
+}
+
+@section ContentBody{
+    <div class="right_col" role="main">
+
+
+
+        <div class="main_container nav-md container body">
+            <div class="row" style="float:left">
+                <div class="col-md-5 col-sm-12 col-xs-12" style="float:left">
+                    <div class="x_panel tile fixed_height_320 overflow_hidden" style="height:530px">
+                        <div class="x_title">
+                            <h3>Email Status</h3>
+
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <table style="width:100%;table-layout: fixed;">
+                                <tr>
+                                    <th style="width:37%;">
+                                        <p class="">@Model.UniqueUser Users</p>
+                                    </th>
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <canvas class="canvasbarNotFound" height="250" width="400" style="margin: 15px 10px 10px 0"></canvas>
+                                    </td>
+
+
+
+                                <tr style="font-size:initial">
+
+                                    <td style="width:70%">
+                                        <p style="font-size:initial"><i class="fa fa-square blue" style="font-size:initial"></i><a href="/Report/Details/delivered">&nbsp;Delivered</a> </p>
+                                    </td>
+                                    <td style="font-size:initial"> @Model.DeliveredCount</td>
+
+                                </tr>
+
+                                <tr style="font-size:initial">
+                                    <td>
+                                        <p style="font-size:initial"><i class="fa fa-square green" style="font-size:initial"></i><a href="/Report/Details/open">&nbsp;Opened</a> </p>
+                                    </td>
+                                    <td style="font-size:initial"> @Model.OpenCount</td>
+                                </tr>
+                                <tr style="font-size:initial; width:200px">
+                                    <td>
+                                        <p style="font-size:initial"><i class="fa fa-square red" style="font-size:initial"></i><a href="/Report/Details/click">&nbsp;Clicks</a> </p>
+                                    </td>
+                                    <td style="font-size:initial">@Model.ClickCount</td>
+                                </tr>
+
+
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="container text-center">
+
+                    <table class="table table-striped jambo_table">
+                        <thead>
+                            <tr class="headings" style="text-align:center">
+
+                                <th class="column-title">Email</th>
+                                <th class="column-title">Event</th>
+                                <th class="column-title">DateInclude</th>
+                                <th class="column-title">Url</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in @Model.Records)
+                            {
+                                <tr style="text-align:left">
+
+                                    <td>@item.Email</td>
+                                    <td>@item.Event1</td>
+                                    <td>@item.DateInclude</td>
+                                    <td>@item.Url</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+
+

@@ -1,3 +1,4 @@
 .vs/
 ./EmailReport/App_Data
 ./EmailReport/bin
+./EmailReport/obj

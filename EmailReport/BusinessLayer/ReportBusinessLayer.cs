@@ -5,6 +5,7 @@ using System.Web;
 using EmailReport.Models;
 
 using EmailReport.DataAccessLayer;
+using System.Data.Entity;
 
 namespace EmailReport.BusinessLayer
 {
@@ -57,7 +58,10 @@ namespace EmailReport.BusinessLayer
         public void UploadEmployee(List<Employee> employees)
         {
             ReportsERPDAL ReportsDal = new ReportsERPDAL();
+            ReportsDal.Database.ExecuteSqlCommand("delete from employee");
+
             ReportsDal.Employees.AddRange(employees);
+            
             ReportsDal.SaveChanges();
         }
 

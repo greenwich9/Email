@@ -21,7 +21,7 @@ namespace EmailReport.DataAccessLayer
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LogRecord>().ToTable("newsletter_log");
-            modelBuilder.Entity<Employee>().ToTable("area");
+            modelBuilder.Entity<Employee>().ToTable("employee");
             base.OnModelCreating(modelBuilder);
         }
     }

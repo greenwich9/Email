@@ -25,9 +25,25 @@ namespace EmailReport.Controllers
             List<LogRecord> allReports = empBal.GetRecords();
             List<ReportViewModel> reportViewModels = new List<ReportViewModel>();
 
+            List<LogRecord> temp = new List<LogRecord>();
+            foreach (LogRecord rec in allReports)
+            {
+                rec.Email = rec.Email.Replace(" ", "").ToLower();
+                temp.Add(rec);
+            }
+            allReports = temp;
+
             //get employee info from DB
             List<Employee> allEmployees = new List<Employee>();
             allEmployees = empBal.GetEmployees();
+
+            List<Employee> tempEmp = new List<Employee>();
+            foreach (Employee rec in allEmployees)
+            {
+                rec.Email = rec.Email.Replace(" ", "").ToLower();
+                tempEmp.Add(rec);
+            }
+            allEmployees = tempEmp;
 
             // group by email so that repetiotiones in the data won't affect the result
             var ep = from e in allEmployees
@@ -95,7 +111,11 @@ namespace EmailReport.Controllers
             List<string> Regionl = RegionList.Distinct().ToList();
             if (Regionl.Contains("EUR"))
             {
-                Regionl.Remove("EUR");
+                //Regionl.Remove("EUR");
+                if (!Regionl.Contains("EMEA"))
+                {
+                    Regionl.Add("EMEA");
+                }
             }
             Regionl.Sort();
             Base.RegionList = Regionl;
@@ -140,11 +160,31 @@ namespace EmailReport.Controllers
             var aReports = from m in allReports
                           where (GlobalVariables.Start.CompareTo(DateTime.Parse(m.DateInclude).ToString("o").Substring(0, 10)) <= 0 && GlobalVariables.End.CompareTo(DateTime.Parse(m.DateInclude).ToString("o").Substring(0, 10)) >= 0)
                           select m;
-            List<LogRecord> Reports = aReports.ToList();
 
+            var allEmail = from m in aReports
+                           select m.Email;
+
+            var filteredReports = from m in aReports
+                      join e in employees on m.Email equals e.Email
+                      select m;
+
+            List<LogRecord> Reports = filteredReports.ToList();
 
             var email = from m in Reports                      
                         select m.Email;
+
+            
+
+            var notInListEmail = allEmail.Except(email);
+
+            ReportListViewModel.NotInListCount = notInListEmail.Distinct().Count();
+            GlobalVariables.NotFoundCount = ReportListViewModel.NotInListCount;
+            var notFoundRec = from m in aReports
+                                  join e in notInListEmail on m.Email equals e
+                                  select m;
+            List<LogRecord> notFoundRecords = notFoundRec.ToList();
+            GlobalVariables.NotFoundRecords = notFoundRecords;
+
 
             //get the number of unique users from their emails
             int uniqueUser = email.Distinct().Count();
@@ -389,6 +429,58 @@ namespace EmailReport.Controllers
 
         }
 
+        public ActionResult NotFoundResult()
+        {
+            NotFoundDetailViewModel NotFound = new NotFoundDetailViewModel();
+            NotFound.Records = GlobalVariables.NotFoundRecords;
+            var email = from m in NotFound.Records
+                        select m.Email;
+            int userCount = email.Distinct().Count();
+            NotFound.UniqueUser = userCount;
+
+            var open = from m in NotFound.Records
+                       where m.Event1.Equals("open")
+                       select m.Email;
+            int openCount = open.Distinct().Count();
+
+            var delivered = from m in NotFound.Records
+                          where m.Event1.Equals("delivered")
+                          select m.Email;
+            int deliveredCount = delivered.Distinct().Count();
+
+            var click = from m in NotFound.Records
+                        where m.Event1.Equals("click")
+                        select m.Email;
+            int clickCount = click.Distinct().Count();
+            NotFound.ClickCount = clickCount;
+            NotFound.OpenCount = openCount;
+            NotFound.DeliveredCount = deliveredCount;
+
+
+
+            NotFound.Start = DateTime.Parse(GlobalVariables.Start).ToString("d");
+            NotFound.End = DateTime.Parse(GlobalVariables.End).ToString("d");
+            NotFound.L1List = GlobalVariables.Base.L1List;
+            NotFound.L2List = GlobalVariables.Base.L2List;
+            NotFound.L3List = GlobalVariables.Base.L3List;
+            NotFound.L4List = GlobalVariables.Base.L4List;
+            NotFound.L5List = GlobalVariables.Base.L5List;
+            NotFound.CountryList = GlobalVariables.Base.CountryList;
+            NotFound.RegionList = GlobalVariables.Base.RegionList;
+            NotFound.StatusList = GlobalVariables.Base.StatusList;
+
+            NotFound.SelectedL1List = GlobalVariables.L1List;
+            NotFound.SelectedL2List = GlobalVariables.L2List;
+            NotFound.SelectedL3List = GlobalVariables.L3List;
+            NotFound.SelectedL4List = GlobalVariables.L4List;
+            NotFound.SelectedL5List = GlobalVariables.L5List;
+            NotFound.SelectedCountryList = GlobalVariables.CountryList;
+            NotFound.SelectedRegionList = GlobalVariables.RegionList;
+            NotFound.SelectedStatusList = GlobalVariables.StatusList;
+
+            return View("NotFoundDetail", NotFound);
+        }
+
         public ActionResult Details(string id)
         {
 
@@ -473,6 +565,7 @@ namespace EmailReport.Controllers
             ReportListViewModel ReportListViewModel = new ReportListViewModel();
             ReportBusinessLayer empBal = new ReportBusinessLayer();
             List<LogRecord> AllRecords = empBal.GetRecords();
+            //System.Diagnostics.Debug.WriteLine(AllRecords.Count() + "all count is");
             string Start = GlobalVariables.Start;
             string End = GlobalVariables.End;
 
@@ -483,15 +576,33 @@ namespace EmailReport.Controllers
             ReportListViewModel.Start = DateTime.Parse(Start).ToString("d");
             ReportListViewModel.End = DateTime.Parse(End).ToString("d");
 
-            //System.Diagnostics.Debug.WriteLine(Reports.Count() + "count is");
             List<ReportViewModel> repViewModels = new List<ReportViewModel>();
 
             List<ReportViewModel> reportViewModels = new List<ReportViewModel>();
 
             List<Employee> allEmployees = new List<Employee>();
             allEmployees = empBal.GetEmployees();
-
+            System.Diagnostics.Debug.WriteLine(allEmployees.Count() + "all employee count is");
             // group by email so that repetiotiones in the data won't affect the result
+            List<LogRecord> temp = new List<LogRecord>();
+            foreach (LogRecord rec in AllRecords)
+            {
+                rec.Email = rec.Email.Replace(" ", "").ToLower();
+                temp.Add(rec);
+            }
+            AllRecords = temp;
+
+            
+
+            List<Employee> tempEmp = new List<Employee>();
+            foreach (Employee rec in allEmployees)
+            {
+                rec.Email = rec.Email.Replace(" ", "").ToLower();
+                tempEmp.Add(rec);
+            }
+            allEmployees = tempEmp;
+
+
             var ep = from e in allEmployees
                      group e by e.Email into grp
                      select new Employee
@@ -507,9 +618,8 @@ namespace EmailReport.Controllers
                          Status = grp.Last().Status
                      };
 
-
             List<Employee> employees = (List<Employee>)ep.ToList();
-            //System.Diagnostics.Debug.WriteLine("number of all employee " + Request.Form["L1"]);
+          
 
             if (Request.Form.AllKeys.Contains("L1"))
             {
@@ -665,8 +775,12 @@ namespace EmailReport.Controllers
                 GlobalVariables.StatusList = GlobalVariables.Base.StatusList;
                 ReportListViewModel.SelectedStatusList = GlobalVariables.Base.StatusList;
             }
+           
+            Reports = from m in Reports
+                      join e in employees on m.Email equals e.Email
+                      select m;
 
-
+            System.Diagnostics.Debug.WriteLine(Reports.Count() + " after join count is");
             var email = from m in Reports
                         select m.Email;
 
@@ -819,7 +933,7 @@ namespace EmailReport.Controllers
 
             regionCodeCount.ElementAt(3).RegionCode = "Ungrouped";
             regionCodeCount.ElementAt(3).Count = upgroupedCount;
-            System.Diagnostics.Debug.WriteLine(upgroupedCount + "count is");
+            //System.Diagnostics.Debug.WriteLine(upgroupedCount + "count is");
 
             ReportListViewModel.RegionCodeCount = regionCodeCount;
 
@@ -896,8 +1010,8 @@ namespace EmailReport.Controllers
             string GraphLine = jss.Serialize(ReportListViewModel.DateCount);
             GraphLine = GraphLine.Replace("\"Date\"", "Date").Replace("\"APJCount\"", "APJ").Replace("\"AMSCount\"", "AMS").Replace("\"EURCount\"", "EUR").Replace("\"EMEACount\"", "EMEA").Replace("\"", "\'");
             ReportListViewModel.GraphLine = GraphLine;
-            System.Diagnostics.Debug.WriteLine(GraphLine);
-
+            //System.Diagnostics.Debug.WriteLine(GraphLine);
+            ReportListViewModel.NotInListCount = GlobalVariables.NotFoundCount;
 
             ReportListViewModel.L1List = GlobalVariables.Base.L1List;
             ReportListViewModel.L2List = GlobalVariables.Base.L2List;
